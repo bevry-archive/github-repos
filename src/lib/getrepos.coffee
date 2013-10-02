@@ -1,7 +1,6 @@
 # Import
 extendr = require('extendr')
 typeChecker = require('typechecker')
-{extractOpts} = require('extract-opts')
 
 # Getter
 class Getter

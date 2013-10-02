@@ -1,5 +1,8 @@
 ## History
 
+- v1.0.2 October 2, 2013
+	- Fixed v1.0.1
+
 - v1.0.1 October 2, 2013
 	- Fixed paging limits
 
