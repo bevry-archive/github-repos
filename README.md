@@ -1,6 +1,5 @@
 # Get Repos
 
-[![Build Status](https://secure.travis-ci.org/bevry/getrepos.png?branch=master)](http://travis-ci.org/bevry/getrepos)
 [![NPM version](https://badge.fury.io/js/getrepos.png)](https://npmjs.org/package/getrepos)
 [![Flattr this project](https://raw.github.com/balupton/flattr-buttons/master/badge-89x18.gif)](http://flattr.com/thing/344188/balupton-on-Flattr)
 
