@@ -1,5 +1,7 @@
 # Import
 extendr = require('extendr')
+typeChecker = require('typechecker')
+{extractOpts} = require('extract-opts')
 
 # Getter
 class Getter
@@ -51,7 +53,7 @@ class Getter
 
 	# Get the repos
 	# return []
-	getRepos: ->
+	getRepos: (repos) ->
 		# Log
 		@log 'debug', 'Get repos'
 
@@ -66,8 +68,24 @@ class Getter
 			else
 				1
 
-		# Fetch prepared repos and sort them
-		repos = Object.keys(@reposMap).map((key) => @reposMap[key]).sort(comparator)
+		# Allow the user to pass in their own array or object
+		if repos? is false
+			repos = @reposMap
+		else
+			# Remove duplicates from array
+			if typeChecker.isArray(repos) is true
+				exists = {}
+				repos = repos.filter (repo) ->
+					exists[repo.full_name] ?= 0
+					++exists[repo.full_name]
+					return exists[repo.full_name] is 1
+
+		# Convert objects to arrays
+		if typeChecker.isPlainObject(repos) is true
+			repos = Object.keys(repos).map((key) => repos[key])
+
+		# Prepare the result
+		repos = repos.sort(comparator)
 
 		# Return
 		return repos
@@ -105,12 +123,33 @@ class Getter
 	# next(err)
 	# return @
 	fetchReposFromSearch: (query,next) ->
-		# Log
-		@log 'debug', 'Get repos from search:', query
-
 		# Prepare
 		me = @
-		feedUrl = "https://api.github.com/search/repositories?per_page=100&q=#{query}&client_id=#{@config.githubClientId}&client_secret=#{@config.githubClientSecret}"
+
+		# Read the user's repository feeds
+		@requestReposFromSearch query, {page:1}, (err,repos) ->
+			# Check
+			return next(err, [])  if err
+			result = me.getRepos(repos)
+			return next(null, result)
+
+		# Chain
+		@
+
+	# Request Repos From Search
+	# query="@bevry/getcontributors @bevry/docpad"
+	# next(err)
+	# return @
+	requestReposFromSearch: (query,opts={},next) ->
+		# Prepare
+		opts.page ?= 1
+		me = @
+
+		# Log
+		@log 'debug', 'Requesting repos from search:', query, opts
+
+		# Prepare feed
+		feedUrl = "https://api.github.com/search/repositories?page=#{opts.page}&per_page=100&q=#{query}&client_id=#{@config.githubClientId}&client_secret=#{@config.githubClientSecret}"
 		feedOptions =
 			url: feedUrl
 			requestOptions:
@@ -129,8 +168,15 @@ class Getter
 				addedRepo = me.addRepo(repo)
 				addedRepos.push(addedRepo)  if addedRepo
 
-			# Success, exit with the repos
-			return next(null, addedRepos)
+			# Success
+			if data.items.length is 100
+				opts.page++
+				me.requestReposFromSearch query, opts, (err, moreAddedRepos) ->
+					return next(err, [])  if err
+					combinedAddedRepos = addedRepos.concat(moreAddedRepos)
+					return next(null, combinedAddedRepos)
+			else
+				return next(null, addedRepos)
 
 		# Chain
 		@
