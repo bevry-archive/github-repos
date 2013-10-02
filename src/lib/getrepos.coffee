@@ -151,6 +151,7 @@ class Getter
 		feedUrl = "https://api.github.com/search/repositories?page=#{opts.page}&per_page=100&q=#{query}&client_id=#{@config.githubClientId}&client_secret=#{@config.githubClientSecret}"
 		feedOptions =
 			url: feedUrl
+			parse: 'json'
 			requestOptions:
 				headers:
 					Accept: 'application/vnd.github.preview'
