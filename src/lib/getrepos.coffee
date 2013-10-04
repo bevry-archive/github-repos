@@ -1,6 +1,7 @@
 # Import
 extendr = require('extendr')
 typeChecker = require('typechecker')
+{TaskGroup} = require('taskgroup')
 
 # Getter
 class Getter
@@ -37,6 +38,10 @@ class Getter
 		@config.log?(args...)
 		@
 
+
+	# =================================
+	# Add
+
 	# Add a repo to the internal listing and finish preparing it
 	# repo = {}
 	# return {}
@@ -44,11 +49,18 @@ class Getter
 		# Log
 		@log 'debug', 'Adding the repo:', repo
 
+		# Check
+		return null  unless repo?.full_name
+
 		# Update references in database
 		@reposMap[repo.full_name] ?= repo
 
 		# Return
 		return @reposMap[repo.full_name]
+
+
+	# =================================
+	# Format
 
 	# Get the repos
 	# return []
@@ -75,6 +87,7 @@ class Getter
 			if typeChecker.isArray(repos) is true
 				exists = {}
 				repos = repos.filter (repo) ->
+					return false  unless repo?.full_name
 					exists[repo.full_name] ?= 0
 					++exists[repo.full_name]
 					return exists[repo.full_name] is 1
@@ -89,30 +102,89 @@ class Getter
 		# Return
 		return repos
 
+
+	# =================================
+	# Individually
+
+	# Fetch Repos
+	# repoFullNames=["bevry/getcontributors"]
+	# next(err)
+	# return @
+	fetchRepos: (repoFullNames,next) ->
+		# Prepare
+		me = @
+
+		# Log
+		@log 'debug', 'Fetch repos:', repos
+
+		# Split it up, github search only supports 79 repos per search it seems...
+		# we thought it was due to url length but that doesn't seem to be the case
+		# 1732 url with 80 repos fails, 1732 url with 79 repos passes
+		repos = []
+		tasks = new TaskGroup().setConfig(concurrency:0).once 'complete', (err) ->
+			# Check
+			return next(err, [])  if err
+			result = me.getRepos(repos)
+			return next(null, result)
+
+		# Add the tasks
+		repoFullNames.forEach (repoFullName) ->  tasks.addTask (complete) ->
+			me.requestRepo repoFullName, {}, (err,repo) ->
+				return complete(err)  if err
+				repos.push(repo)  if repo
+				return complete()
+
+		# Run the tasks
+		tasks.run()
+
+		# Chain
+		@
+
+	# Request Repo
+	# repoFullName="bevry/getcontributors"
+	# next(err)
+	# return @
+	requestRepo: (repoFullName,opts={},next) ->
+		# Prepare
+		me = @
+
+		# Prepare feed
+		feedUrl = "https://api.github.com/repos/#{repoFullName}?client_id=#{@config.githubClientId}&client_secret=#{@config.githubClientSecret}"
+		feedOptions =
+			url: feedUrl
+			parse: 'json'
+
+		# Log
+		@log 'debug', 'Requesting repo:', repoFullName, opts, feedUrl
+
+		# Read the user's repository feeds
+		@feedr.readFeed feedOptions, (err,repo) ->
+			# Check
+			return next(err, {})  if err
+
+			# Add
+			addedRepo = me.addRepo(repo)
+
+			# Return
+			return next(null, addedRepo)
+
+		# Chain
+		@
+
+
+	# =================================
+	# Search
+
 	# Fetch Repos From Users
-	# repos=["bevry"]
+	# users=["bevry"]
 	# next(err)
 	# return @
 	fetchReposFromUsers: (users,next) ->
 		# Log
-		@log 'debug', 'Get repos from users:', users
+		@log 'debug', 'Fetch repos from users:', users
 
 		# Prepare
 		query = users.map((name)->'@'+name).join('%20')
-
-		# Forward
-		return @fetchReposFromSearch(query, next)
-
-	# Fetch Repos
-	# repos=["bevry/getcontributors"]
-	# next(err)
-	# return @
-	fetchRepos: (repos,next) ->
-		# Log
-		@log 'debug', 'Get repos:', repos
-
-		# Prepare
-		query = repos.map((name)->'@'+name).join('%20')
 
 		# Forward
 		return @fetchReposFromSearch(query, next)
@@ -124,6 +196,13 @@ class Getter
 	fetchReposFromSearch: (query,next) ->
 		# Prepare
 		me = @
+
+		# Check
+		if typeChecker.isArray(query)
+			query = query.map((name)->'@'+name).join('%20')
+
+		# Log
+		@log 'debug', 'Fetch repos from search:', query
 
 		# Read the user's repository feeds
 		@requestReposFromSearch query, {page:1}, (err,repos) ->
@@ -144,9 +223,6 @@ class Getter
 		opts.page ?= 1
 		me = @
 
-		# Log
-		@log 'debug', 'Requesting repos from search:', query, opts
-
 		# Prepare feed
 		feedUrl = "https://api.github.com/search/repositories?page=#{opts.page}&per_page=100&q=#{query}&client_id=#{@config.githubClientId}&client_secret=#{@config.githubClientSecret}"
 		feedOptions =
@@ -156,13 +232,16 @@ class Getter
 				headers:
 					Accept: 'application/vnd.github.preview'
 
+		# Log
+		@log 'debug', 'Requesting repos from search:', query, opts, feedUrl
+
 		# Read the user's repository feeds
 		@feedr.readFeed feedOptions, (err,data) ->
 			# Check
 			return next(err, [])  if err
 			return next(null, [])  unless data?.items?.length
 
-			# Filter out forks, return just their names
+			# Add
 			addedRepos = []
 			for repo in data.items
 				addedRepo = me.addRepo(repo)
@@ -170,12 +249,14 @@ class Getter
 
 			# Success
 			if data.items.length is 100
+				# Page
 				opts.page++
 				me.requestReposFromSearch query, opts, (err, moreAddedRepos) ->
 					return next(err, [])  if err
 					combinedAddedRepos = addedRepos.concat(moreAddedRepos)
 					return next(null, combinedAddedRepos)
 			else
+				# Return
 				return next(null, addedRepos)
 
 		# Chain

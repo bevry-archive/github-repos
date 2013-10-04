@@ -1,5 +1,9 @@
 ## History
 
+- v1.0.4 October 4, 2013
+	- Fetch repositories individually instead of by search by default
+	- Updated dependencies
+
 - v1.0.3 October 3, 2013
 	- Updated dependencies
 
