@@ -1,16 +1,11 @@
-# Get Repos
 
-[![NPM version](https://badge.fury.io/js/getrepos.png)](https://npmjs.org/package/getrepos)
-[![Flattr this project](https://raw.github.com/balupton/flattr-buttons/master/badge-89x18.gif)](http://flattr.com/thing/344188/balupton-on-Flattr)
+<!-- TITLE -->
 
-Fetch the specified repositories, or those that match a particular github user or search query
+<!-- BADGES -->
 
+<!-- DESCRIPTION -->
 
-## Install
-
-```
-npm install --save getrepos
-```
+<!-- INSTALL -->
 
 
 ## Usage
@@ -40,10 +35,10 @@ getter.fetchRepos(['bevry/getrepos'], function(err){
 Repos are returned as an array of [repository objects](https://api.github.com/repos/bevry/getrepos).
 
 
-## History
-You can discover the history inside the `History.md` file
+<!-- HISTORY -->
 
+<!-- CONTRIBUTE -->
 
-## License
-Licensed under the incredibly [permissive](http://en.wikipedia.org/wiki/Permissive_free_software_licence) [MIT License](http://creativecommons.org/licenses/MIT/)
-<br/>Copyright &copy; 2013+ [Bevry Pty Ltd](http://bevry.me)
+<!-- BACKERS -->
+
+<!-- LICENSE -->

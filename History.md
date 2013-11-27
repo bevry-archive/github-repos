@@ -1,5 +1,9 @@
 ## History
 
+- v1.0.5 November 27, 2013
+	- Updated GitHub Search API header from `preview` to `beta`
+	- Updated dependencies
+
 - v1.0.4 October 4, 2013
 	- Fetch repositories individually instead of by search by default
 	- Updated dependencies

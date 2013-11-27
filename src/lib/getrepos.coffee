@@ -230,7 +230,7 @@ class Getter
 			parse: 'json'
 			requestOptions:
 				headers:
-					Accept: 'application/vnd.github.preview'
+					Accept: 'application/vnd.github.beta+json'
 
 		# Log
 		@log 'debug', 'Requesting repos from search:', query, opts, feedUrl
