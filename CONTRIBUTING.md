@@ -1,10 +1,17 @@
 <!--
-v1.3.9 November 17, 2013
+v1.3.22 June 23, 2013
 https://github.com/bevry/base
 -->
 
 
 # Contribute
+
+
+## Resources
+
+- [Coding Standards](http://learn.bevry.me/community/coding-standards)
+- [Documentation Guidelines](http://learn.bevry.me/community/documentation-guidelines)
+- [Support Guidelines](http://learn.bevry.me/community/support-guidelines)
 
 
 ## Development
@@ -68,8 +75,7 @@ For project maintainers
 	```
 
 5. Publish new version
-	
+
 	``` bash
 	cake publish
 	```
-

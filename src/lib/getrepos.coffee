@@ -121,7 +121,7 @@ class Getter
 		# we thought it was due to url length but that doesn't seem to be the case
 		# 1732 url with 80 repos fails, 1732 url with 79 repos passes
 		repos = []
-		tasks = new TaskGroup().setConfig(concurrency:0).once 'complete', (err) ->
+		tasks = new TaskGroup(concurrency:0).done (err) ->
 			# Check
 			return next(err, [])  if err
 			result = me.getRepos(repos)
