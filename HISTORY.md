@@ -1,5 +1,8 @@
 # History
 
+## v1.0.7 December 11, 2014
+- Repackaged
+
 ## v1.0.6 December 11, 2014
 - Updated dependencies
 

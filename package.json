@@ -1,7 +1,7 @@
 {
   "title": "Get Repos",
   "name": "getrepos",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Fetch the specified repositories, or those that match a particular github user or search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": {
@@ -65,5 +65,8 @@
   "scripts": {
     "test": "node ./out/test/getrepos-test.js"
   },
-  "main": "./out/lib/getrepos.js"
+  "main": "./out/lib/getrepos.js",
+  "cakeConfiguration": {
+    "COFFEE_SRC_PATH": "src"
+  }
 }
