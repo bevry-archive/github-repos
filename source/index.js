@@ -52,7 +52,7 @@ class Getter {
 	}
 
 	/**
-	Forward the arguments onto the configured logger if it exists.
+	Construct our Getter Class
 	@param {Object} [opts]
 	@param {Function} [opts.log] - defaults to `null`, can be a function that receives the arguments: `logLevel`, `...args`
 	@param {string} [opts.githubClientId] - defaults to the environment variable `GITHUB_CLIENT_ID` or `null`
