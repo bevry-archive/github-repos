@@ -56,12 +56,14 @@ Fetch the specified repositories, or those that match a particular github user o
 
 ## Usage
 
+[API Documentation.](http://master.getrepos.bevry.surge.sh/docs/)
+
 ``` javascript
 // Create our getrepos instance
 var getter = require('getrepos').create({
 	githubClientId: null,      // optional, will try process.env.GITHUB_CLIENT_ID
 	githubClientSecret: null,  // optional, will try process.env.GITHUB_CLIENT_SECRET
-	log: console.log           // optional, arguments: level, message... 
+	log: console.log           // optional, arguments: level, message...
 });
 
 // Fetch the data on these github repositories
@@ -77,8 +79,6 @@ getter.fetchRepos(['bevry/getrepos'], function(err){
 	});
 });
 ```
-
-Repos are returned as an array of [repository objects](https://api.github.com/repos/bevry/getrepos).
 
 
 <!-- HISTORY/ -->
