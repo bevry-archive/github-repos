@@ -1,5 +1,8 @@
 # History
 
+## v1.1.1 2017 February 28
+- Internal: explicit use of GitHub API version
+
 ## v1.1.0 2017 February 27
 - Converted from CoffeeScript to JavaScript
 - Fixed rate limit errors not being caught

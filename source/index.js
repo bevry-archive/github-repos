@@ -1,6 +1,7 @@
 'use strict'
 
 // Import
+const Feedr = require('feedr')
 const typeChecker = require('typechecker')
 const extendr = require('extendr')
 const {TaskGroup} = require('taskgroup')
@@ -71,7 +72,7 @@ class Getter {
 		extendr.extend(this.config, opts)
 
 		// Feedr
-		this.feedr = require('feedr').create(this.config)
+		this.feedr = Feedr.create(this.config)
 
 		// Chain
 		return this
@@ -226,7 +227,12 @@ class Getter {
 		const me = this
 		const feedOptions = {
 			url: `https://api.github.com/repos/${repoFullName}?client_id=${this.config.githubClientId}&client_secret=${this.config.githubClientSecret}`,
-			parse: 'json'
+			parse: 'json',
+			requestOptions: {
+				headers: {
+					Accept: 'application/vnd.github.v3+json'
+				}
+			}
 		}
 
 		// Read the user's repository feeds
@@ -337,7 +343,7 @@ class Getter {
 			parse: 'json',
 			requestOptions: {
 				headers: {
-					Accept: 'application/vnd.github.beta+json'
+					Accept: 'application/vnd.github.v3+json'
 				}
 			}
 		}
