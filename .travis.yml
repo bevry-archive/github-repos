@@ -137,8 +137,8 @@ env:
   # Custom Configuration for this repository
   # travis encrypt "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" --add env.global
   # travis encrypt "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" --add env.global
-  - secure: J98NuekSMfICE4G9sJVIVP1fHQTh57g5fNHWAjlxpU9erUHHKBUnLeBPQjhtXQdkCbk5IIBQ6lTYAmeeSvI6E+7kWHhQ3zf3L0a8at6VNtHIzHsGnZFbmTavsZ+AIlyMLhUFY2eypZScfMxdaxLWE/3lzJ5hpRoJc7OJvg085HY=
-  - secure: tnLZEHx1V/t0RW1K8OYkAFaiKdseIXipKA+JhxRST6yE/mFYw4wUzqL9tVBxB7+OcC1LMoVbmlPsKrpBO8GUeRWYQSm60hUc6UeSrz6gFbSS8nz1+3uF4erhlgwwaK6PpVgnj25OSf2X2aSbgRGL9JAsgid9feNkKl0CnrvXuq0=
+  - secure: MuAv7+9dqmXCy6iOU3KBLi4RwtzdGQ0Tx+RT6GyO1SvBjhr+eK3KebwxSzvI6Y/yWmOvp++QH6Hm+/fT18KYZpF5Vtl5fyaJREn+BbnSeTSlOmRiauyEqvIwDFbAl+1U2nROyeQDlgivkrHpHv3s5kvlH6G0bTe7n4wW2Qxi+yU=
+  - secure: TxAL7jbKrDsGM07PmOS5Rw6wK/oJ/wzMMU3kK6wqdaewsFrPh/3sw20myM6CPGF1XTUJij87TOX00xed6A/+Bs4i1QvzhfmAP4QA89lbirwp6QXXtBNrj/zXP+VcGLcArVi2ARfnyylaJMC4Wq0Ly3RsiJ0e+91iHXgVX4m7ruY=
 
 # https://github.com/balupton/awesome-travis#slack
 # https://github.com/balupton/awesome-travis#email
