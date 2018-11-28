@@ -1,5 +1,9 @@
 # History
 
+## v1.2.0 2018 November 28
+
+-   Updated [base files](https://github.com/bevry/base) and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v1.1.2 2017 February 28
 
 -   Updated dependencies
