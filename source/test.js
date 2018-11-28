@@ -21,7 +21,7 @@ joe.suite('getrepos', function(suite, test) {
 						.join(' ')
 						.replace(
 							/(client_id|clientid|key|secret)=[a-z0-9]+/gi,
-							'$1=SECRET_REMOVED_BY_FEEDR_CLEAN'
+							'$1=SECRET_REMOVED_BY_GETREPOS_CLEAN'
 						)
 				)
 			}

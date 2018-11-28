@@ -58,28 +58,25 @@ Fetch the specified repositories, or those that match a particular github user o
 
 [API Documentation.](http://master.getrepos.bevry.surge.sh/docs/)
 
-``` javascript
+```javascript
 // Create our getrepos instance
 var getter = require('getrepos').create({
-	githubClientId: null,      // optional, will try process.env.GITHUB_CLIENT_ID
-	githubClientSecret: null,  // optional, will try process.env.GITHUB_CLIENT_SECRET
-	log: console.log           // optional, arguments: level, message...
-});
+    log: console.log // optional, arguments: level, message...
+})
 
 // Fetch the data on these github repositories
-getter.fetchRepos(['bevry/getrepos'], function(err){
-	console.log(err);
+getter.fetchRepos(['bevry/getrepos'], function(err) {
+    console.log(err)
 
-	// Fetch all the repo data on these github users/organisations
-	getter.fetchReposFromUsers(['bevry'], function(err){
-		console.log(err);
+    // Fetch all the repo data on these github users/organisations
+    getter.fetchReposFromUsers(['bevry'], function(err) {
+        console.log(err)
 
-		// Get the combined listing
-		console.log(getter.getRepos());
-	});
-});
+        // Get the combined listing
+        console.log(getter.getRepos())
+    })
+})
 ```
-
 
 <!-- HISTORY/ -->
 

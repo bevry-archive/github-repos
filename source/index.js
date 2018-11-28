@@ -3,16 +3,36 @@
 // Import
 const Feedr = require('feedr')
 const typeChecker = require('typechecker')
-const extendr = require('extendr')
 const { TaskGroup } = require('taskgroup')
+const githubAuthQueryString = require('githubauthquerystring').fetch()
+/**
+ * The repository object returned by github.
+ * All values they return are contained within.
+ * We have only documented however the values that we use.
+ * @typedef {Object} Repository
+ * @property {string} name
+ * @property {string} full_name
+ */
 
 /**
-Compare the name param of two objects for sorting in an array
-@param {Object} a
-@param {Object} b
-@return {number} either 0, -1, or 1
-@access private
-*/
+ * @callback RepositoriesCallback
+ * @param {Error|null} error
+ * @param {Array<Repository>} [result]
+ */
+
+/**
+ * @callback RepositoryCallback
+ * @param {Error|null} error
+ * @param {Repository} [result]
+ */
+
+/**
+ * Compare the name param of two objects for sorting in an array
+ * @param {Object} a
+ * @param {Object} b
+ * @return {number} either 0, -1, or 1
+ * @access private
+ */
 function nameComparator(a, b) {
 	const A = a.name.toLowerCase()
 	const B = b.name.toLowerCase()
@@ -26,48 +46,32 @@ function nameComparator(a, b) {
 }
 
 /**
-Get Repositories Class
-
-A class as it contains a config object, as well as a `reposMap` object.
-
-Configuration details can be found in the constructor definition.
-
-Configuration is also forwarded onto https://github.com/bevry/feedr which we use for fetching data.
-
-@constructor
-@class Getter
-@access public
-*/
+ * Get Repositories Class
+ * A class as it contains a config object, as well as a `reposMap` object.
+ * Configuration is also forwarded onto https://github.com/bevry/feedr which we use for fetching data.
+ * @access public
+ */
 class Getter {
 	/**
-	Creates and returns new instance of the current class.
-	@param {...*} args - The arguments to be forwarded along to the constructor.
-	@return {Object} The new instance.
-	@static
-	@access public
-	*/
+	 * Creates and returns new instance of the current class.
+	 * @param {...*} args - The arguments to be forwarded along to the constructor.
+	 * @return {Object} The new instance.
+	 * @access public
+	 */
 	static create(...args) {
 		return new this(...args)
 	}
 
 	/**
-	Construct our Getter Class
-	@param {Object} [opts]
-	@param {Function} [opts.log] - defaults to `null`, can be a function that receives the arguments: `logLevel`, `...args`
-	@param {string} [opts.githubClientId] - defaults to the environment variable `GITHUB_CLIENT_ID` or `null`
-	@param {string} [opts.githubClientSecret] - defaults to environment variable `GITHUB_CLIENT_SECRET` or `null`
-	@access public
-	*/
+	 * Construct our Getter Class
+	 * @param {Object} [opts]
+	 * @param {Function} [opts.log] - defaults to `null`, can be a function that receives the arguments: `logLevel`, `...args`
+	 * @access public
+	 */
 	constructor(opts = {}) {
 		// Prepare
-		this.config = {
-			githubClientId: process.env.GITHUB_CLIENT_ID || null,
-			githubClientSecret: process.env.GITHUB_CLIENT_SECRET || null
-		}
+		this.config = Object.assign({}, opts)
 		this.reposMap = {}
-
-		// Extend configuration
-		extendr.extend(this.config, opts)
 
 		// Feedr
 		this.feedr = Feedr.create(this.config)
@@ -77,12 +81,12 @@ class Getter {
 	}
 
 	/**
-	Forward the arguments onto the configured logger if it exists.
-	@param {...*} args
-	@chainable
-	@returns {this}
-	@access private
-	*/
+	 * Forward the arguments onto the configured logger if it exists.
+	 * @param {...*} args
+	 * @chainable
+	 * @returns {this}
+	 * @access private
+	 */
 	log(...args) {
 		if (this.config.log) {
 			this.config.log(...args)
@@ -94,11 +98,11 @@ class Getter {
 	// Add
 
 	/**
-	Add a repository to the internal listing and finish preparing it
-	@param {Repository} [repo]
-	@returns {Repository}
-	@access private
-	*/
+	 * Add a repository to the internal listing and finish preparing it
+	 * @param {Repository} [repo]
+	 * @returns {Repository}
+	 * @access private
+	 */
 	addRepo(repo) {
 		// Log
 		this.log('debug', 'Adding the repo:', repo)
@@ -121,58 +125,50 @@ class Getter {
 	// Format
 
 	/**
-	Prepare a repo for return to the user
-	@param {Array} [repos] - array of {Repository}
-	@returns {Array} - array of {Repository}
-	@access private
-	*/
-	getRepos(repos) {
+	 * Prepare a repo for return to the user
+	 * @param {Array<Repository>|Object<string, Repository>} [repos]
+	 * @returns {Array<Repository>}
+	 * @access private
+	 */
+	getRepos(repos = this.reposMap) {
 		// Log
 		this.log('debug', 'Get repos')
 
-		// Allow the user to pass in their own array or object
-		if (repos == null) {
-			repos = this.reposMap
-		}
+		// Convert objects to arrays
+		/** @type Array<Repository> */
+		const list = typeChecker.isPlainObject(repos)
+			? Object.keys(repos).map(key => repos[key])
+			: repos
 
 		// Remove duplicates from array
-		else if (typeChecker.isArray(repos)) {
-			const exists = {}
-			repos = repos.filter(function(repo) {
-				if (exists[repo.full_name] == null) {
-					exists[repo.full_name] = 0
-				}
-				++exists[repo.full_name]
-				return exists[repo.full_name] === 1
-			})
-		}
-
-		// Convert objects to arrays
-		if (typeChecker.isPlainObject(repos)) {
-			repos = Object.keys(repos).map(key => repos[key])
-		}
+		const exists = {}
+		const filtered = list.filter(function(repo) {
+			if (exists[repo.full_name] == null) {
+				exists[repo.full_name] = 0
+			}
+			++exists[repo.full_name]
+			return exists[repo.full_name] === 1
+		})
 
 		// Prepare the result
-		this.log('debug', `Sorting the ${repos.length} repositories`)
-		repos = repos.sort(nameComparator)
+		this.log('debug', `Sorting the ${filtered.length} repositories`)
+		const sorted = filtered.sort(nameComparator)
 
 		// Return
-		return repos
+		return sorted
 	}
 
 	// =================================
 	// Fetch Directly
 
 	/**
-	Fetch data for Repositories from Repository Names
-	@param {Array} [repoFullNames] - array of {string} repository names, such as `['bevry/getcontributors', 'bevry/getrepos']`
-	@param {Function} [next] - completion callback, accepts the arguments:
-	@param {Error} [next.error] - if the procedure failed, this is the error instance, otherwise `null`
-	@param {Array} [next.result] - if the procedure succeeded, this is the array of repos
-	@chainable
-	@returns {this}
-	@access public
-	*/
+	 * Fetch data for Repositories from Repository Names
+	 * @param {Array<string>} [repoFullNames] Array of {string} repository names, such as `['bevry/getcontributors', 'bevry/getrepos']`
+	 * @param {RepositoriesCallback} next
+	 * @chainable
+	 * @returns {this}
+	 * @access public
+	 */
 	fetchRepos(repoFullNames, next) {
 		// Log
 		this.log('debug', 'Fetch repositories:', repoFullNames)
@@ -208,22 +204,18 @@ class Getter {
 	}
 
 	/**
-	Fetch data for Repostiory from Repository Name
-	@param {string} [repoFullName] - repostory name, such as `'bevry/getrepos'`
-	@param {Function} [next] - completion callback, accepts the arguments:
-	@param {Error} [next.error] - if the procedure failed, this is the error instance, otherwise `null`
-	@param {Array} [next.result] - if the procedure succeeded, this is the array of repos
-	@chainable
-	@returns {this}
-	@access public
-	*/
+	 * Fetch data for Repostiory from Repository Name
+	 * @param {string} repoFullName Repostory name, such as `'bevry/getrepos'`
+	 * @param {RepositoryCallback} next
+	 * @chainable
+	 * @returns {this}
+	 * @access public
+	 */
 	requestRepo(repoFullName, next) {
 		// Prepare
 		const me = this
 		const feedOptions = {
-			url: `https://api.github.com/repos/${repoFullName}?client_id=${
-				this.config.githubClientId
-			}&client_secret=${this.config.githubClientSecret}`,
+			url: `https://api.github.com/repos/${repoFullName}?${githubAuthQueryString}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
@@ -236,11 +228,11 @@ class Getter {
 		this.feedr.readFeed(feedOptions, function(err, responseData) {
 			// Check
 			if (err) {
-				return next(err, [])
+				return next(err)
 			} else if (responseData.message) {
-				return next(new Error(responseData.message), [])
+				return next(new Error(responseData.message))
 			} else if (!responseData.full_name) {
-				return next(new Error('response was not a repository'), [])
+				return next(new Error('response was not a repository'))
 			}
 
 			// Add
@@ -258,15 +250,13 @@ class Getter {
 	// Fetch from Search
 
 	/**
-	Fetch data for Repostiories from Users
-	@param {Array} [users] - users to get repos for, such as `['bevry', 'browserstate']`
-	@param {Function} [next] - completion callback, accepts the arguments:
-	@param {Error} [next.error] - if the procedure failed, this is the error instance, otherwise `null`
-	@param {Array} [next.result] - if the procedure succeeded, this is the array of repos
-	@chainable
-	@returns {this}
-	@access public
-	*/
+	 * Fetch data for Repostiories from Users
+	 * @param {Array} [users] - users to get repos for, such as `['bevry', 'browserstate']`
+	 * @param {RepositoriesCallback} next
+	 * @chainable
+	 * @returns {this}
+	 * @access public
+	 */
 	fetchReposFromUsers(users, next) {
 		// Log
 		this.log('debug', 'Fetch repos from users:', users)
@@ -279,15 +269,13 @@ class Getter {
 	}
 
 	/**
-	Fetch data for Repostiories from a Search
-	@param {string|Array} [query] - search query, such as `@bevry/getcontributors @bevry/getrepos`, can also be array `['bevry/getcontributors', 'bevry/getrepos']`
-	@param {Function} [next] - completion callback, accepts the arguments:
-	@param {Error} [next.error] - if the procedure failed, this is the error instance, otherwise `null`
-	@param {Array} [next.result] - if the procedure succeeded, this is the array of repos
-	@chainable
-	@returns {this}
-	@access public
-	*/
+	 * Fetch data for Repostiories from a Search
+	 * @param {string|Array<string>} [query] - search query, such as `@bevry/getcontributors @bevry/getrepos`, can also be array `['bevry/getcontributors', 'bevry/getrepos']`
+	 * @param {RepositoriesCallback} next
+	 * @chainable
+	 * @returns {this}
+	 * @access public
+	 */
 	fetchReposFromSearch(query, next) {
 		// Prepare
 		const me = this
@@ -314,17 +302,15 @@ class Getter {
 	}
 
 	/**
-	Fetch data for Repostiories from a Search, will iterate all subsequent pages
-	@param {string} [query] - search query, such as `@bevry/getcontributors @bevry/getrepos`
-	@param {Object} [opts] - optional params for the search
-	@param {number} [opts.page] - the starting page, defaults to 1
-	@param {Function} [next] - completion callback, accepts the arguments:
-	@param {Error} [next.error] - if the procedure failed, this is the error instance, otherwise `null`
-	@param {Array} [next.result] - if the procedure succeeded, this is the array of repos
-	@chainable
-	@returns {this}
-	@access public
-	*/
+	 * Fetch data for Repostiories from a Search, will iterate all subsequent pages
+	 * @param {string} query - search query, such as `@bevry/getcontributors @bevry/getrepos`
+	 * @param {Object} [opts] - optional params for the search
+	 * @param {number} [opts.page] - the starting page, defaults to 1
+	 * @param {RepositoriesCallback} next
+	 * @chainable
+	 * @returns {this}
+	 * @access public
+	 */
 	requestReposFromSearch(query, opts = {}, next) {
 		// Prepare
 		const me = this
@@ -334,9 +320,7 @@ class Getter {
 		const feedOptions = {
 			url: `https://api.github.com/search/repositories?page=${
 				opts.page
-			}&per_page=100&q=${query}&client_id=${
-				this.config.githubClientId
-			}&client_secret=${this.config.githubClientSecret}`,
+			}&per_page=100&q=${query}&${githubAuthQueryString}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {

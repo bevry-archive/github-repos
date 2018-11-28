@@ -1,5 +1,12 @@
 # History
 
+## v1.3.0 2018 November 28
+
+-   No longer accepts the github auth credentials in configuration, use environment variables instead
+    -   Internally we now use [githubauthquerystring](https://github.com/bevry/githubauthquerystring) to determine the github auth string
+-   Fixed error cases of `requestRepo` returning an array as the result instead of nothing
+-   Better documentation
+
 ## v1.2.0 2018 November 28
 
 -   Updated [base files](https://github.com/bevry/base) and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
