@@ -2,59 +2,84 @@
 'use strict'
 
 // Import
-const {getType} = require('typechecker')
-const {equal, errorEqual} = require('assert-helpers')
+const { getType } = require('typechecker')
+const { equal, errorEqual } = require('assert-helpers')
 const util = require('util')
 const joe = require('joe')
 
 // Test
-joe.suite('getrepos', function (suite, test) {
+joe.suite('getrepos', function(suite, test) {
 	let getter = null
 
 	// Create our instance
-	test('create', function () {
+	test('create', function() {
 		getter = require('../').create({
-			log (...args) {
+			log(...args) {
 				console.log(
-					args.map((arg) => util.inspect(arg, {colors: true})).join(' ').replace(/(client_id|clientid|key|secret)=[a-z0-9]+/gi, '$1=SECRET_REMOVED_BY_FEEDR_CLEAN')
+					args
+						.map(arg => util.inspect(arg, { colors: true }))
+						.join(' ')
+						.replace(
+							/(client_id|clientid|key|secret)=[a-z0-9]+/gi,
+							'$1=SECRET_REMOVED_BY_FEEDR_CLEAN'
+						)
 				)
 			}
 		})
 	})
 
 	// Fetch all the contributors on these github
-	suite('repo', function (suite, test) {
-		test('fetch', function (done) {
-			getter.fetchRepos(['bevry/getcontributors', 'bevry/getrepos'], function (err, result) {
+	suite('repo', function(suite, test) {
+		test('fetch', function(done) {
+			getter.fetchRepos(['bevry/getcontributors', 'bevry/getrepos'], function(
+				err,
+				result
+			) {
 				errorEqual(err, null)
 				equal(getType(result), 'array', 'result is array')
-				equal(result.length > 0, true, `length to be more than 0, it was ${result.length}`)
+				equal(
+					result.length > 0,
+					true,
+					`length to be more than 0, it was ${result.length}`
+				)
 				return done()
 			})
 		})
 
-		test('combined result', function () {
+		test('combined result', function() {
 			const result = getter.getRepos()
 			equal(getType(result), 'array', 'result is array')
-			equal(result.length > 0, true, `length to be more than 0, it was ${result.length}`)
+			equal(
+				result.length > 0,
+				true,
+				`length to be more than 0, it was ${result.length}`
+			)
 		})
 	})
 
 	// Fetch all the contributors on these github users/organisations
-	suite('users', function (suite, test) {
-		test('fetch', function (done) {
-			getter.fetchReposFromUsers(['browserstate'], function (err, result) {
+	suite('users', function(suite, test) {
+		test('fetch', function(done) {
+			getter.fetchReposFromUsers(['browserstate'], function(err, result) {
 				errorEqual(err, null)
 				equal(getType(result), 'array', 'result is array')
-				equal(result.length > 0, true, `length to be more than 0, it was ${result.length}`)
+				equal(
+					result.length > 0,
+					true,
+					`length to be more than 0, it was ${result.length}`
+				)
 				return done()
 			})
 		})
 
-		test('combined result', function () {
+		test('combined result', function() {
 			const result = getter.getRepos()
 			equal(getType(result), 'array', 'result is array')
-			equal(result.length > 0, true, `length to be more than 0, it was ${result.length}`)
+			equal(
+				result.length > 0,
+				true,
+				`length to be more than 0, it was ${result.length}`
+			)
 		})
 	})
 })

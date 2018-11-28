@@ -4,7 +4,7 @@
 const Feedr = require('feedr')
 const typeChecker = require('typechecker')
 const extendr = require('extendr')
-const {TaskGroup} = require('taskgroup')
+const { TaskGroup } = require('taskgroup')
 
 /**
 Compare the name param of two objects for sorting in an array
@@ -13,16 +13,14 @@ Compare the name param of two objects for sorting in an array
 @return {number} either 0, -1, or 1
 @access private
 */
-function nameComparator (a, b) {
+function nameComparator(a, b) {
 	const A = a.name.toLowerCase()
 	const B = b.name.toLowerCase()
-	if ( A === B ) {
+	if (A === B) {
 		return 0
-	}
-	else if ( A < B ) {
+	} else if (A < B) {
 		return -1
-	}
-	else {
+	} else {
 		return 1
 	}
 }
@@ -48,7 +46,7 @@ class Getter {
 	@static
 	@access public
 	*/
-	static create (...args) {
+	static create(...args) {
 		return new this(...args)
 	}
 
@@ -60,7 +58,7 @@ class Getter {
 	@param {string} [opts.githubClientSecret] - defaults to environment variable `GITHUB_CLIENT_SECRET` or `null`
 	@access public
 	*/
-	constructor (opts = {}) {
+	constructor(opts = {}) {
 		// Prepare
 		this.config = {
 			githubClientId: process.env.GITHUB_CLIENT_ID || null,
@@ -85,13 +83,12 @@ class Getter {
 	@returns {this}
 	@access private
 	*/
-	log (...args) {
-		if ( this.config.log ) {
+	log(...args) {
+		if (this.config.log) {
 			this.config.log(...args)
 		}
 		return this
 	}
-
 
 	// =================================
 	// Add
@@ -102,24 +99,23 @@ class Getter {
 	@returns {Repository}
 	@access private
 	*/
-	addRepo (repo) {
+	addRepo(repo) {
 		// Log
 		this.log('debug', 'Adding the repo:', repo)
 
 		// Check
-		if ( !repo || !repo.full_name ) {
+		if (!repo || !repo.full_name) {
 			return null
 		}
 
 		// Update references in database
-		if ( this.reposMap[repo.full_name] == null ) {
+		if (this.reposMap[repo.full_name] == null) {
 			this.reposMap[repo.full_name] = repo
 		}
 
 		// Return
 		return this.reposMap[repo.full_name]
 	}
-
 
 	// =================================
 	// Format
@@ -130,20 +126,20 @@ class Getter {
 	@returns {Array} - array of {Repository}
 	@access private
 	*/
-	getRepos (repos) {
+	getRepos(repos) {
 		// Log
 		this.log('debug', 'Get repos')
 
 		// Allow the user to pass in their own array or object
-		if ( repos == null ) {
+		if (repos == null) {
 			repos = this.reposMap
 		}
 
 		// Remove duplicates from array
-		else if ( typeChecker.isArray(repos) ) {
+		else if (typeChecker.isArray(repos)) {
 			const exists = {}
-			repos = repos.filter(function (repo) {
-				if ( exists[repo.full_name] == null ) {
+			repos = repos.filter(function(repo) {
+				if (exists[repo.full_name] == null) {
 					exists[repo.full_name] = 0
 				}
 				++exists[repo.full_name]
@@ -152,8 +148,8 @@ class Getter {
 		}
 
 		// Convert objects to arrays
-		if ( typeChecker.isPlainObject(repos) ) {
-			repos = Object.keys(repos).map((key) => repos[key])
+		if (typeChecker.isPlainObject(repos)) {
+			repos = Object.keys(repos).map(key => repos[key])
 		}
 
 		// Prepare the result
@@ -163,7 +159,6 @@ class Getter {
 		// Return
 		return repos
 	}
-
 
 	// =================================
 	// Fetch Directly
@@ -178,25 +173,25 @@ class Getter {
 	@returns {this}
 	@access public
 	*/
-	fetchRepos (repoFullNames, next) {
+	fetchRepos(repoFullNames, next) {
 		// Log
 		this.log('debug', 'Fetch repositories:', repoFullNames)
 
 		// Prepare
 		const me = this
 		const result = []
-		const tasks = TaskGroup.create({concurrency: 0}).done(function (err) {
-			if ( err ) {
+		const tasks = TaskGroup.create({ concurrency: 0 }).done(function(err) {
+			if (err) {
 				return next(err, [])
 			}
 			return next(null, me.getRepos(result))
 		})
 
 		// Add the tasks
-		repoFullNames.forEach(function (repoFullName) {
-			tasks.addTask(`fetch repo data for ${repoFullName}`, function (complete) {
-				me.requestRepo(repoFullName, function (err, repo) {
-					if ( err ) {
+		repoFullNames.forEach(function(repoFullName) {
+			tasks.addTask(`fetch repo data for ${repoFullName}`, function(complete) {
+				me.requestRepo(repoFullName, function(err, repo) {
+					if (err) {
 						return complete(err)
 					}
 					result.push(repo)
@@ -222,11 +217,13 @@ class Getter {
 	@returns {this}
 	@access public
 	*/
-	requestRepo (repoFullName, next) {
+	requestRepo(repoFullName, next) {
 		// Prepare
 		const me = this
 		const feedOptions = {
-			url: `https://api.github.com/repos/${repoFullName}?client_id=${this.config.githubClientId}&client_secret=${this.config.githubClientSecret}`,
+			url: `https://api.github.com/repos/${repoFullName}?client_id=${
+				this.config.githubClientId
+			}&client_secret=${this.config.githubClientSecret}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
@@ -236,16 +233,13 @@ class Getter {
 		}
 
 		// Read the user's repository feeds
-		this.feedr.readFeed(feedOptions, function (err, responseData) {
+		this.feedr.readFeed(feedOptions, function(err, responseData) {
 			// Check
-			if ( err ) {
+			if (err) {
 				return next(err, [])
-			}
-			else if ( responseData.message ) {
+			} else if (responseData.message) {
 				return next(new Error(responseData.message), [])
-			}
-
-			else if ( !responseData.full_name ) {
+			} else if (!responseData.full_name) {
 				return next(new Error('response was not a repository'), [])
 			}
 
@@ -260,7 +254,6 @@ class Getter {
 		return this
 	}
 
-
 	// =================================
 	// Fetch from Search
 
@@ -274,12 +267,12 @@ class Getter {
 	@returns {this}
 	@access public
 	*/
-	fetchReposFromUsers (users, next) {
+	fetchReposFromUsers(users, next) {
 		// Log
 		this.log('debug', 'Fetch repos from users:', users)
 
 		// Prepare
-		const query = users.map((name) => `@${name}`).join('%20')
+		const query = users.map(name => `@${name}`).join('%20')
 
 		// Forward
 		return this.fetchReposFromSearch(query, next)
@@ -295,21 +288,21 @@ class Getter {
 	@returns {this}
 	@access public
 	*/
-	fetchReposFromSearch (query, next) {
+	fetchReposFromSearch(query, next) {
 		// Prepare
 		const me = this
 
 		// Check
-		if ( typeChecker.isArray(query) ) {
-			query = query.map((name) => `@${name}`).join('%20')
+		if (typeChecker.isArray(query)) {
+			query = query.map(name => `@${name}`).join('%20')
 		}
 
 		// Log
 		this.log('debug', 'Fetch repositories from search:', query)
 
 		// Read the user's repository feeds
-		this.requestReposFromSearch(query, {page: 1}, function (err, repos) {
-			if ( err ) {
+		this.requestReposFromSearch(query, { page: 1 }, function(err, repos) {
+			if (err) {
 				return next(err, [])
 			}
 			const result = me.getRepos(repos)
@@ -332,14 +325,18 @@ class Getter {
 	@returns {this}
 	@access public
 	*/
-	requestReposFromSearch (query, opts = {}, next) {
+	requestReposFromSearch(query, opts = {}, next) {
 		// Prepare
 		const me = this
-		if ( opts.page == null ) {
+		if (opts.page == null) {
 			opts.page = 1
 		}
 		const feedOptions = {
-			url: `https://api.github.com/search/repositories?page=${opts.page}&per_page=100&q=${query}&client_id=${this.config.githubClientId}&client_secret=${this.config.githubClientSecret}`,
+			url: `https://api.github.com/search/repositories?page=${
+				opts.page
+			}&per_page=100&q=${query}&client_id=${
+				this.config.githubClientId
+			}&client_secret=${this.config.githubClientSecret}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
@@ -349,46 +346,48 @@ class Getter {
 		}
 
 		// Log
-		this.log('debug', 'Requesting repositories from search:', query, opts, feedOptions.url)
+		this.log(
+			'debug',
+			'Requesting repositories from search:',
+			query,
+			opts,
+			feedOptions.url
+		)
 
 		// Read the user's repository feeds
-		this.feedr.readFeed(feedOptions, function (err, responseData) {
+		this.feedr.readFeed(feedOptions, function(err, responseData) {
 			// Check
-			if ( err ) {
+			if (err) {
 				return next(err, [])
-			}
-			else if ( responseData.message ) {
+			} else if (responseData.message) {
 				return next(new Error(responseData.message), [])
-			}
-			else if ( !responseData || !Array.isArray(responseData.items) ) {
+			} else if (!responseData || !Array.isArray(responseData.items)) {
 				return next(new Error('response was not the format we expected'), [])
-			}
-			else if ( responseData.items.length === 0 ) {
+			} else if (responseData.items.length === 0) {
 				return next(null, [])
 			}
 
 			// Add
 			const addedRepos = []
-			responseData.items.forEach(function (repo) {
+			responseData.items.forEach(function(repo) {
 				const addedRepo = me.addRepo(repo)
-				if ( addedRepo ) {
+				if (addedRepo) {
 					addedRepos.push(addedRepo)
 				}
 			})
 
 			// Success
-			if ( responseData.items.length === 100 ) {
+			if (responseData.items.length === 100) {
 				// Page
 				opts.page += 1
-				me.requestReposFromSearch(query, opts, function (err, moreAddedRepos) {
-					if ( err ) {
+				me.requestReposFromSearch(query, opts, function(err, moreAddedRepos) {
+					if (err) {
 						return next(err, [])
 					}
 					const combinedAddedRepos = addedRepos.concat(moreAddedRepos)
 					return next(null, combinedAddedRepos)
 				})
-			}
-			else {
+			} else {
 				// Return
 				return next(null, addedRepos)
 			}
