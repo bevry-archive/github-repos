@@ -80,7 +80,7 @@
   ],
   "main": "source/index.js",
   "dependencies": {
-    "feedr": "^3.0.0",
+    "feedr": "^4.0.0",
     "githubauthquerystring": "^1.0.2",
     "taskgroup": "^5.0.1",
     "typechecker": "^4.4.1"
