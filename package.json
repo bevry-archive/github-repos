@@ -1,6 +1,6 @@
 {
   "name": "getrepos",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Fetch the specified repositories, or those that match a particular github user or search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": "MIT",

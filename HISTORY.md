@@ -1,5 +1,9 @@
 # History
 
+## v1.4.0 2019 November 8
+
+-   Updated [base files](https://github.com/bevry/base) and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v1.3.0 2018 November 28
 
 -   No longer accepts the github auth credentials in configuration, use environment variables instead
