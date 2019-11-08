@@ -5,10 +5,10 @@
 const { getType } = require('typechecker')
 const { equal, errorEqual } = require('assert-helpers')
 const util = require('util')
-const joe = require('joe')
+const kava = require('kava')
 
 // Test
-joe.suite('getrepos', function(suite, test) {
+kava.suite('getrepos', function(suite, test) {
 	let getter = null
 
 	// Create our instance

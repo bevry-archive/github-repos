@@ -318,9 +318,7 @@ class Getter {
 			opts.page = 1
 		}
 		const feedOptions = {
-			url: `https://api.github.com/search/repositories?page=${
-				opts.page
-			}&per_page=100&q=${query}&${githubAuthQueryString}`,
+			url: `https://api.github.com/search/repositories?page=${opts.page}&per_page=100&q=${query}&${githubAuthQueryString}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
