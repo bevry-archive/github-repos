@@ -13,7 +13,7 @@ kava.suite('getrepos', function(suite, test) {
 
 	// Create our instance
 	test('create', function() {
-		getter = require('../').create({
+		getter = require('./').create({
 			log(...args) {
 				console.log(
 					args
