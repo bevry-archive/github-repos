@@ -87,7 +87,7 @@
     "typechecker": "^5.0.0"
   },
   "devDependencies": {
-    "assert-helpers": "5.4.0",
+    "assert-helpers": "5.7.0",
     "eslint": "^6.6.0",
     "eslint-config-bevry": "^2.2.0",
     "eslint-config-prettier": "^6.5.0",
