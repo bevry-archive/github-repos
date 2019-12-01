@@ -83,7 +83,7 @@
   "dependencies": {
     "feedr": "^4.3.0",
     "githubauthquerystring": "^2.0.0",
-    "taskgroup": "6.2.0",
+    "taskgroup": "6.3.0",
     "typechecker": "^5.0.0"
   },
   "devDependencies": {
