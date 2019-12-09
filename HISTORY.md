@@ -1,7 +1,12 @@
 # History
 
+## v2.0.1 2019 December 9
+
+-   Fix `GITHUB_API` fallback
+
 ## v2.0.0 2019 December 9
 
+-   Implemented support for `GITHUB_API` environment variable to access the GitHub API via a proxy
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
 -   Minimum required node version changed from `node: >=0.8` to `node: >=8` to keep up with mandatory ecosystem changes
 

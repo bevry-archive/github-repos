@@ -5,7 +5,7 @@ const Feedr = require('feedr')
 const typeChecker = require('typechecker')
 const { TaskGroup } = require('taskgroup')
 const githubAuthQueryString = require('githubauthquerystring').fetch()
-const ghapi = process.env.GITHUB_API || '${ghapi}'
+const ghapi = process.env.GITHUB_API || 'https://api.github.com'
 
 /**
  * The repository object returned by github.
