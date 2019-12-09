@@ -5,6 +5,8 @@ const Feedr = require('feedr')
 const typeChecker = require('typechecker')
 const { TaskGroup } = require('taskgroup')
 const githubAuthQueryString = require('githubauthquerystring').fetch()
+const ghapi = process.env.GITHUB_API || '${ghapi}'
+
 /**
  * The repository object returned by github.
  * All values they return are contained within.
@@ -215,7 +217,7 @@ class Getter {
 		// Prepare
 		const me = this
 		const feedOptions = {
-			url: `https://api.github.com/repos/${repoFullName}?${githubAuthQueryString}`,
+			url: `${ghapi}/repos/${repoFullName}?${githubAuthQueryString}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
@@ -318,7 +320,7 @@ class Getter {
 			opts.page = 1
 		}
 		const feedOptions = {
-			url: `https://api.github.com/search/repositories?page=${opts.page}&per_page=100&q=${query}&${githubAuthQueryString}`,
+			url: `${ghapi}/search/repositories?page=${opts.page}&per_page=100&q=${query}&${githubAuthQueryString}`,
 			parse: 'json',
 			requestOptions: {
 				headers: {
