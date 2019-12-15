@@ -24,23 +24,24 @@ export interface Error {
 }
 
 /**
- * GitHub's response to getting a repository
- * https://developer.github.com/v3/repos/#get
+ * GitHub's Repository Response will either be a repository, or if invalid, an error
  */
 export type RepositoryResponse = StrictUnion<Error | Repository>
+
+/**
+ * GitHub's Search Response will either be a search result, or if invalid, an error
+ */
+export type SearchResponse = StrictUnion<Error | Search>
 
 /**
  * GitHub's response to searching for repositories
  * https://developer.github.com/v3/search/#search-repositories
  */
-export type SearchResponse = StrictUnion<
-	| Error
-	| {
-			total_count: number
-			incomplete_results: boolean
-			items: SearchRepository[]
-	  }
->
+export interface Search {
+	total_count: number
+	incomplete_results: boolean
+	items: SearchRepository[]
+}
 
 /**
  * Search results return a subset of the full repository results
@@ -86,7 +87,7 @@ export interface Owner {
 }
 
 /**
- * The complete repository result
+ * GitHub's response to getting a repository
  * https://developer.github.com/v3/repos/#get
  */
 export interface Repository extends SearchRepository {
