@@ -1,5 +1,9 @@
 # History
 
+## v3.0.1 2019 December 16
+
+-   Fix type exports
+
 ## v3.0.0 2019 December 16
 
 -   Rewrote in TypeScript
