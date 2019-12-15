@@ -1,5 +1,10 @@
 # History
 
+## v3.0.0 2019 December 16
+
+-   Rewrote in TypeScript
+-   API now uses Promises instead of Errbacks
+
 ## v2.0.1 2019 December 9
 
 -   Fix `GITHUB_API` fallback

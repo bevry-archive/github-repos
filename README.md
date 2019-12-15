@@ -1,13 +1,13 @@
 <!-- TITLE/ -->
 
-<h1>getrepos</h1>
+<h1>Get Repositories</h1>
 
 <!-- /TITLE -->
 
 
 <!-- BADGES/ -->
 
-<span class="badge-travisci"><a href="http://travis-ci.com/bevry/getrepos" title="Check this project's build status on TravisCI"><img src="https://img.shields.io/travis/com/bevry/getrepos/master.svg" alt="Travis CI Build Status" /></a></span>
+<span class="badge-travisci"><a href="http://travis-ci.org/bevry/getrepos" title="Check this project's build status on TravisCI"><img src="https://img.shields.io/travis/bevry/getrepos/master.svg" alt="Travis CI Build Status" /></a></span>
 <span class="badge-npmversion"><a href="https://npmjs.org/package/getrepos" title="View this project on NPM"><img src="https://img.shields.io/npm/v/getrepos.svg" alt="NPM version" /></a></span>
 <span class="badge-npmdownloads"><a href="https://npmjs.org/package/getrepos" title="View this project on NPM"><img src="https://img.shields.io/npm/dm/getrepos.svg" alt="NPM downloads" /></a></span>
 <span class="badge-daviddm"><a href="https://david-dm.org/bevry/getrepos" title="View the status of this project's dependencies on DavidDM"><img src="https://img.shields.io/david/bevry/getrepos.svg" alt="Dependency Status" /></a></span>
@@ -43,26 +43,24 @@ Fetch the specified repositories, or those that match a particular github user o
 <li>Require: <code>require('getrepos')</code></li>
 </ul>
 
+<a href="https://jspm.io" title="Native ES Modules CDN"><h3>jspm</h3></a>
+
+``` html
+<script type="module">
+    import * as pkg from '//dev.jspm.io/getrepos'
+</script>
+```
+
 <h3><a href="https://editions.bevry.me" title="Editions are the best way to produce and consume packages you care about.">Editions</a></h3>
 
 <p>This package is published with the following editions:</p>
 
-<ul><li><code>getrepos</code> aliases <code>getrepos/source/index.js</code></li>
-<li><code>getrepos/source/index.js</code> is esnext source code with require for modules</li></ul>
+<ul><li><code>getrepos/source/index.ts</code> is typescript source code with import for modules</li>
+<li><code>getrepos/edition-browsers/index.js</code> is typescript compiled against <a href="https://babeljs.io/docs/learn-es2015/" title="ECMAScript Next">ESNext</a> for web browsers with import for modules</li>
+<li><code>getrepos</code> aliases <code>getrepos/edition-esnext/index.js</code></li>
+<li><code>getrepos/edition-esnext/index.js</code> is typescript compiled against <a href="https://babeljs.io/docs/learn-es2015/" title="ECMAScript Next">ESNext</a> for Node.js with require for modules</li></ul>
 
 <p>Environments older than Node.js v8 may need <a href="https://babeljs.io/docs/usage/polyfill/" title="A polyfill that emulates missing ECMAScript environment features">Babel's Polyfill</a> or something similar.</p>
-
-<h3><a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a></h3>
-
-This project provides its type information via inline <a href="http://usejsdoc.org" title="JSDoc is an API documentation generator for JavaScript, similar to Javadoc or phpDocumentor">JSDoc Comments</a>. To make use of this in <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a>, set your <code>maxNodeModuleJsDepth</code> compiler option to `5` or thereabouts. You can accomlish this via your `tsconfig.json` file like so:
-
-``` json
-{
-  "compilerOptions": {
-    "maxNodeModuleJsDepth": 5
-  }
-}
-```
 
 <!-- /INSTALL -->
 
@@ -72,23 +70,28 @@ This project provides its type information via inline <a href="http://usejsdoc.o
 [API Documentation.](http://master.getrepos.bevry.surge.sh/docs/)
 
 ```javascript
-// Create our getrepos instance
-var getter = require('getrepos').create({
-    log: console.log // optional, arguments: level, message...
-})
+import {
+    fetchRepo,
+    fetchRepos,
+    fetchReposFromSearch,
+    fetchReposFromUsers
+} from 'getrepos'
 
-// Fetch the data on these github repositories
-getter.fetchRepos(['bevry/getrepos'], function(err) {
-    console.log(err)
+// https://developer.github.com/v3/repos/#get
+fetchRepo('bevry/getrepos')
+    .then(console.log)
+    .catch(console.error)
+fetchRepos(['bevry/getrepos'])
+    .then(console.log)
+    .catch(console.error)
 
-    // Fetch all the repo data on these github users/organisations
-    getter.fetchReposFromUsers(['bevry'], function(err) {
-        console.log(err)
-
-        // Get the combined listing
-        console.log(getter.getRepos())
-    })
-})
+// https://developer.github.com/v3/search/#search-repositories
+fetchReposFromSearch('@bevry', { pages: 0 })
+    .then(console.log)
+    .catch(console.error)
+fetchReposFromUsers(['bevry'], { pages: 0 })
+    .then(console.log)
+    .catch(console.error)
 ```
 
 <!-- HISTORY/ -->
