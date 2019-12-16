@@ -1,5 +1,9 @@
 # History
 
+## v4.0.1 2019 December 16
+
+-   Updated README example for v4.0.0 API change
+
 ## v4.0.0 2019 December 16
 
 -   Renamed API from `fetch*` to `get*`

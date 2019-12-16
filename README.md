@@ -71,25 +71,25 @@ Fetch the specified repositories, or those that match a particular github user o
 
 ```javascript
 import {
-    fetchRepo,
-    fetchRepos,
-    fetchReposFromSearch,
-    fetchReposFromUsers
+    getRepo,
+    getRepos,
+    getReposFromSearch,
+    getReposFromUsers
 } from 'getrepos'
 
 // https://developer.github.com/v3/repos/#get
-fetchRepo('bevry/getrepos')
+getRepo('bevry/getrepos')
     .then(console.log)
     .catch(console.error)
-fetchRepos(['bevry/getrepos'])
+getRepos(['bevry/getrepos'])
     .then(console.log)
     .catch(console.error)
 
 // https://developer.github.com/v3/search/#search-repositories
-fetchReposFromSearch('@bevry', { pages: 0 })
+getReposFromSearch('@bevry', { pages: 0 })
     .then(console.log)
     .catch(console.error)
-fetchReposFromUsers(['bevry'], { pages: 0 })
+getReposFromUsers(['bevry'], { pages: 0 })
     .then(console.log)
     .catch(console.error)
 ```
