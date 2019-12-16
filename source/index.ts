@@ -1,10 +1,10 @@
 /* eslint camelcase:0 */
 
 // Import
+import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
 import githubAuthQueryString from 'githubauthquerystring'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
-import { StrictUnion } from 'simplytyped'
 
 // =================================
 // Types
@@ -14,7 +14,7 @@ import { StrictUnion } from 'simplytyped'
  * https://developer.github.com/v3/
  */
 export interface Error {
-	message: 'Bad credentials'
+	message: string
 	documentation_url?: string
 	errors?: Array<{
 		resource: string
@@ -218,7 +218,7 @@ export interface SearchOptions {
  * Fetch data for Repostiory from Repository Name
  * @param repoFullName Repostory name, such as `'bevry/getrepos'`
  */
-export async function fetchRepo(repoFullName: string): Promise<Repository> {
+export async function getRepo(repoFullName: string): Promise<Repository> {
 	try {
 		const url = `${ghapi}/repos/${repoFullName}?${githubAuthQueryString.fetch()}`
 		const resp = await fetch(url, {
@@ -240,11 +240,9 @@ export async function fetchRepo(repoFullName: string): Promise<Repository> {
  * Fetch data for Repositories from Repository Names
  * @param repoFullNames Array of repository names, such as `['bevry/getcontributors', 'bevry/getrepos']`
  */
-export async function fetchRepos(
-	repoFullNames: string[]
-): Promise<Repository[]> {
+export async function getRepos(repoFullNames: string[]): Promise<Repository[]> {
 	return await Promise.all(
-		repoFullNames.map(repoFullName => fetchRepo(repoFullName))
+		repoFullNames.map(repoFullName => getRepo(repoFullName))
 	)
 }
 
@@ -255,7 +253,7 @@ export async function fetchRepos(
  * Fetch data for Repostiories from a Search, will iterate all subsequent pages
  * @param query The search query to send to GitHub, such as `@bevry/getcontributors @bevry/getrepos`
  */
-export async function fetchReposFromSearch(
+export async function getReposFromSearch(
 	query: string,
 	opts: SearchOptions = {}
 ): Promise<SearchRepository[]> {
@@ -280,7 +278,7 @@ export async function fetchReposFromSearch(
 		const within = opts.pages === 0 || opts.page < opts.pages
 		if (data.items.length === opts.size && within)
 			return data.items.concat(
-				await fetchReposFromSearch(
+				await getReposFromSearch(
 					query,
 					Object.assign({}, opts, { page: opts.page + 1 })
 				)
@@ -295,10 +293,10 @@ export async function fetchReposFromSearch(
  * Fetch data for Repostiories from Users
  * @param users Fetch repositories for these users, such as `['bevry', 'browserstate']`
  */
-export async function fetchReposFromUsers(
+export async function getReposFromUsers(
 	users: string[],
 	opts: SearchOptions = {}
 ): Promise<SearchRepository[]> {
 	const query = users.map(name => `@${name}`).join('%20')
-	return await fetchReposFromSearch(query, opts)
+	return await getReposFromSearch(query, opts)
 }

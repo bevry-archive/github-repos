@@ -1,7 +1,7 @@
 {
   "title": "Get Repositories",
   "name": "getrepos",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Fetch the specified repositories, or those that match a particular github user or search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": "MIT",

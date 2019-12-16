@@ -1,5 +1,9 @@
 # History
 
+## v4.0.0 2019 December 16
+
+-   Renamed API from `fetch*` to `get*`
+
 ## v3.0.1 2019 December 16
 
 -   Fix type exports

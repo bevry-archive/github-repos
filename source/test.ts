@@ -1,12 +1,12 @@
 // Import
 import { equal } from 'assert-helpers'
-import { fetchRepos, fetchReposFromUsers } from './index.js'
+import { getRepos, getReposFromUsers } from './index.js'
 import kava from 'kava'
 
 // Test
 kava.suite('getrepos', function(suite, test) {
 	test('repos', function(done) {
-		fetchRepos(['bevry/getcontributors', 'bevry/getrepos'])
+		getRepos(['bevry/getcontributors', 'bevry/getrepos'])
 			.then(function(result) {
 				equal(Array.isArray(result), true, 'result is array')
 				equal(
@@ -21,7 +21,7 @@ kava.suite('getrepos', function(suite, test) {
 
 	// Fetch all the contributors on these github users/organisations
 	test('users', function(done) {
-		fetchReposFromUsers(['browserstate'])
+		getReposFromUsers(['browserstate'])
 			.then(function(result) {
 				equal(Array.isArray(result), true, 'result is array')
 				equal(
