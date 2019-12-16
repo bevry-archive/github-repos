@@ -1,7 +1,7 @@
 {
   "title": "Get Repositories",
   "name": "getrepos",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Fetch the specified repositories, or those that match a particular github user or search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": "MIT",
@@ -172,7 +172,8 @@
   "module": "edition-browsers/index.js",
   "dependencies": {
     "cross-fetch": "^3.0.4",
-    "githubauthquerystring": "^2.3.0"
+    "githubauthquerystring": "^2.3.0",
+    "simplytyped": "^3.2.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.11.0",
@@ -185,7 +186,6 @@
     "kava": "^4.4.0",
     "prettier": "^1.19.1",
     "projectz": "^1.16.0",
-    "simplytyped": "^3.2.3",
     "surge": "^0.21.3",
     "typedoc": "^0.15.4",
     "typescript": "^3.7.3",
