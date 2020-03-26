@@ -4,10 +4,10 @@ import { getRepos, getReposFromUsers } from './index.js'
 import kava from 'kava'
 
 // Test
-kava.suite('getrepos', function(suite, test) {
-	test('repos', function(done) {
+kava.suite('getrepos', function (suite, test) {
+	test('repos', function (done) {
 		getRepos(['bevry/getcontributors', 'bevry/getrepos'])
-			.then(function(result) {
+			.then(function (result) {
 				equal(Array.isArray(result), true, 'result is array')
 				equal(
 					result.length > 0,
@@ -20,9 +20,9 @@ kava.suite('getrepos', function(suite, test) {
 	})
 
 	// Fetch all the contributors on these github users/organisations
-	test('users', function(done) {
+	test('users', function (done) {
 		getReposFromUsers(['browserstate'])
-			.then(function(result) {
+			.then(function (result) {
 				equal(Array.isArray(result), true, 'result is array')
 				equal(
 					result.length > 0,

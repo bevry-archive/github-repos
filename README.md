@@ -7,7 +7,7 @@
 
 <!-- BADGES/ -->
 
-<span class="badge-travisci"><a href="http://travis-ci.org/bevry/getrepos" title="Check this project's build status on TravisCI"><img src="https://img.shields.io/travis/bevry/getrepos/master.svg" alt="Travis CI Build Status" /></a></span>
+<span class="badge-travisci"><a href="http://travis-ci.com/bevry/getrepos" title="Check this project's build status on TravisCI"><img src="https://img.shields.io/travis/com/bevry/getrepos/master.svg" alt="Travis CI Build Status" /></a></span>
 <span class="badge-npmversion"><a href="https://npmjs.org/package/getrepos" title="View this project on NPM"><img src="https://img.shields.io/npm/v/getrepos.svg" alt="NPM version" /></a></span>
 <span class="badge-npmdownloads"><a href="https://npmjs.org/package/getrepos" title="View this project on NPM"><img src="https://img.shields.io/npm/dm/getrepos.svg" alt="NPM downloads" /></a></span>
 <span class="badge-daviddm"><a href="https://david-dm.org/bevry/getrepos" title="View the status of this project's dependencies on DavidDM"><img src="https://img.shields.io/david/bevry/getrepos.svg" alt="Dependency Status" /></a></span>
@@ -33,57 +33,21 @@ Fetch the specified repositories, or those that match a particular github user o
 <!-- /DESCRIPTION -->
 
 
-<!-- INSTALL/ -->
-
-<h2>Install</h2>
-
-<a href="https://npmjs.com" title="npm is a package manager for javascript"><h3>npm</h3></a>
-<ul>
-<li>Install: <code>npm install --save getrepos</code></li>
-<li>Require: <code>require('getrepos')</code></li>
-</ul>
-
-<a href="https://jspm.io" title="Native ES Modules CDN"><h3>jspm</h3></a>
-
-``` html
-<script type="module">
-    import * as pkg from '//dev.jspm.io/getrepos'
-</script>
-```
-
-<h3><a href="https://editions.bevry.me" title="Editions are the best way to produce and consume packages you care about.">Editions</a></h3>
-
-<p>This package is published with the following editions:</p>
-
-<ul><li><code>getrepos/source/index.ts</code> is typescript source code with import for modules</li>
-<li><code>getrepos/edition-browsers/index.js</code> is typescript compiled against <a href="https://babeljs.io/docs/learn-es2015/" title="ECMAScript Next">ESNext</a> for web browsers with import for modules</li>
-<li><code>getrepos</code> aliases <code>getrepos/edition-esnext/index.js</code></li>
-<li><code>getrepos/edition-esnext/index.js</code> is typescript compiled against <a href="https://babeljs.io/docs/learn-es2015/" title="ECMAScript Next">ESNext</a> for Node.js with require for modules</li></ul>
-
-<p>Environments older than Node.js v8 may need <a href="https://babeljs.io/docs/usage/polyfill/" title="A polyfill that emulates missing ECMAScript environment features">Babel's Polyfill</a> or something similar.</p>
-
-<!-- /INSTALL -->
-
-
 ## Usage
 
-[API Documentation.](http://master.getrepos.bevry.surge.sh/docs/)
+[Complete API Documentation.](http://master.getrepos.bevry.surge.sh/docs/globals.html)
 
 ```javascript
 import {
     getRepo,
     getRepos,
     getReposFromSearch,
-    getReposFromUsers
+    getReposFromUsers,
 } from 'getrepos'
 
 // https://developer.github.com/v3/repos/#get
-getRepo('bevry/getrepos')
-    .then(console.log)
-    .catch(console.error)
-getRepos(['bevry/getrepos'])
-    .then(console.log)
-    .catch(console.error)
+getRepo('bevry/getrepos').then(console.log).catch(console.error)
+getRepos(['bevry/getrepos']).then(console.log).catch(console.error)
 
 // https://developer.github.com/v3/search/#search-repositories
 getReposFromSearch('@bevry', { pages: 0 })
@@ -93,6 +57,53 @@ getReposFromUsers(['bevry'], { pages: 0 })
     .then(console.log)
     .catch(console.error)
 ```
+
+<!-- INSTALL/ -->
+
+<h2>Install</h2>
+
+<a href="https://npmjs.com" title="npm is a package manager for javascript"><h3>npm</h3></a>
+<ul>
+<li>Install: <code>npm install --save getrepos</code></li>
+<li>Import: <code>import * as pkg from ('getrepos')</code></li>
+<li>Require: <code>const pkg = require('getrepos')</code></li>
+</ul>
+
+<a href="https://www.pika.dev/cdn" title="100% Native ES Modules CDN"><h3>pika</h3></a>
+
+``` html
+<script type="module">
+    import * as pkg from '//cdn.pika.dev/getrepos/^4.0.3'
+</script>
+```
+
+<a href="https://unpkg.com" title="unpkg is a fast, global content delivery network for everything on npm"><h3>unpkg</h3></a>
+
+``` html
+<script type="module">
+    import * as pkg from '//unpkg.com/getrepos@^4.0.3'
+</script>
+```
+
+<a href="https://jspm.io" title="Native ES Modules CDN"><h3>jspm</h3></a>
+
+``` html
+<script type="module">
+    import * as pkg from '//dev.jspm.io/getrepos@4.0.3'
+</script>
+```
+
+<h3><a href="https://editions.bevry.me" title="Editions are the best way to produce and consume packages you care about.">Editions</a></h3>
+
+<p>This package is published with the following editions:</p>
+
+<ul><li><code>getrepos/source/index.ts</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> source code with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li>
+<li><code>getrepos/edition-browsers/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against <a href="https://en.wikipedia.org/wiki/ECMAScript#ES.Next" title="ECMAScript Next">ESNext</a> for web browsers with <a href="https://babeljs.io/docs/learn-es2015/#modules" title="ECMAScript Modules">Import</a> for modules</li>
+<li><code>getrepos</code> aliases <code>getrepos/edition-esnext/index.js</code></li>
+<li><code>getrepos/edition-esnext/index.js</code> is <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. ">TypeScript</a> compiled against <a href="https://en.wikipedia.org/wiki/ECMAScript#ES.Next" title="ECMAScript Next">ESNext</a> for <a href="https://nodejs.org" title="Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine">Node.js</a> with <a href="https://nodejs.org/dist/latest-v5.x/docs/api/modules.html" title="Node/CJS Modules">Require</a> for modules</li></ul>
+
+<!-- /INSTALL -->
+
 
 <!-- HISTORY/ -->
 
@@ -120,7 +131,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 These amazing people are maintaining this project:
 
-<ul><li><a href="http://balupton.com">Benjamin Lupton</a></li></ul>
+<ul><li><a href="http://balupton.com">Benjamin Lupton</a> — <a href="https://github.com/bevry/getrepos/commits?author=balupton" title="View the GitHub contributions of Benjamin Lupton on repository bevry/getrepos">view contributions</a></li></ul>
 
 <h3>Sponsors</h3>
 
@@ -140,8 +151,8 @@ No sponsors yet! Will you be the first?
 
 These amazing people have contributed code to this project:
 
-<ul><li><a href="http://balupton.com">Benjamin Lupton</a></li>
-<li><a href="http://github.com/apps/dependabot-preview">dependabot-preview[bot]</a></li></ul>
+<ul><li><a href="http://balupton.com">Benjamin Lupton</a> — <a href="https://github.com/bevry/getrepos/commits?author=balupton" title="View the GitHub contributions of Benjamin Lupton on repository bevry/getrepos">view contributions</a></li>
+<li><a href="http://github.com/apps/dependabot-preview">dependabot-preview[bot]</a> — <a href="https://github.com/bevry/getrepos/commits?author=dependabot-preview[bot]" title="View the GitHub contributions of dependabot-preview[bot] on repository bevry/getrepos">view contributions</a></li></ul>
 
 <a href="https://github.com/bevry/getrepos/blob/master/CONTRIBUTING.md#files">Discover how you can contribute by heading on over to the <code>CONTRIBUTING.md</code> file.</a>
 

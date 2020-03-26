@@ -1,5 +1,10 @@
 # History
 
+## v4.0.3 2020 March 27
+
+-   Fixed for latest TypeScript
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v4.0.2 2019 December 16
 
 -   Fix missing dependency

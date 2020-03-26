@@ -3,7 +3,7 @@
 // Import
 import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
-import githubAuthQueryString from 'githubauthquerystring'
+import githubAuthQueryString, { redact } from 'githubauthquerystring'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
 
 // =================================
@@ -220,11 +220,11 @@ export interface SearchOptions {
  */
 export async function getRepo(repoFullName: string): Promise<Repository> {
 	try {
-		const url = `${ghapi}/repos/${repoFullName}?${githubAuthQueryString.fetch()}`
+		const url = `${ghapi}/repos/${repoFullName}?${githubAuthQueryString}`
 		const resp = await fetch(url, {
 			headers: {
-				Accept: 'application/vnd.github.v3+json'
-			}
+				Accept: 'application/vnd.github.v3+json',
+			},
 		})
 		const data = (await resp.json()) as RepositoryResponse
 		if (data && data.message) throw data.message
@@ -232,7 +232,7 @@ export async function getRepo(repoFullName: string): Promise<Repository> {
 			throw new Error('response was not a repository')
 		return data as Repository
 	} catch (err) {
-		return Promise.reject(githubAuthQueryString.redact(err.message))
+		return Promise.reject(redact(err.message))
 	}
 }
 
@@ -242,7 +242,7 @@ export async function getRepo(repoFullName: string): Promise<Repository> {
  */
 export async function getRepos(repoFullNames: string[]): Promise<Repository[]> {
 	return await Promise.all(
-		repoFullNames.map(repoFullName => getRepo(repoFullName))
+		repoFullNames.map((repoFullName) => getRepo(repoFullName))
 	)
 }
 
@@ -264,11 +264,11 @@ export async function getReposFromSearch(
 		// fetch
 		const url = `${ghapi}/search/repositories?page=${opts.page}&per_page=${
 			opts.size
-		}&q=${encodeURIComponent(query)}&${githubAuthQueryString.fetch()}`
+		}&q=${encodeURIComponent(query)}&${githubAuthQueryString}`
 		const resp = await fetch(url, {
 			headers: {
-				Accept: 'application/vnd.github.v3+json'
-			}
+				Accept: 'application/vnd.github.v3+json',
+			},
 		})
 		const data = (await resp.json()) as SearchResponse
 		if (data && data.message) throw data.message
@@ -285,7 +285,7 @@ export async function getReposFromSearch(
 			)
 		return data.items
 	} catch (err) {
-		return Promise.reject(githubAuthQueryString.redact(err.message))
+		return Promise.reject(redact(err.message))
 	}
 }
 
@@ -297,6 +297,6 @@ export async function getReposFromUsers(
 	users: string[],
 	opts: SearchOptions = {}
 ): Promise<SearchRepository[]> {
-	const query = users.map(name => `@${name}`).join('%20')
+	const query = users.map((name) => `@${name}`).join('%20')
 	return await getReposFromSearch(query, opts)
 }
