@@ -3,7 +3,7 @@
 // Import
 import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
-import githubAuthQueryString, { redact } from 'githubauthquerystring'
+import { githubAuthorizationHeader } from 'githubauthreq'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
 
 // =================================
@@ -219,21 +219,17 @@ export interface SearchOptions {
  * @param repoFullName Repostory name, such as `'bevry/getrepos'`
  */
 export async function getRepo(repoFullName: string): Promise<Repository> {
-	try {
-		const url = `${ghapi}/repos/${repoFullName}?${githubAuthQueryString}`
-		const resp = await fetch(url, {
-			headers: {
-				Accept: 'application/vnd.github.v3+json',
-			},
-		})
-		const data = (await resp.json()) as RepositoryResponse
-		if (data && data.message) throw data.message
-		if (!data || !data.full_name)
-			throw new Error('response was not a repository')
-		return data as Repository
-	} catch (err) {
-		return Promise.reject(redact(err.message))
-	}
+	const url = `${ghapi}/repos/${repoFullName}`
+	const resp = await fetch(url, {
+		headers: {
+			Authorization: githubAuthorizationHeader(),
+			Accept: 'application/vnd.github.v3+json',
+		},
+	})
+	const data = (await resp.json()) as RepositoryResponse
+	if (data && data.message) throw data.message
+	if (!data || !data.full_name) throw new Error('response was not a repository')
+	return data as Repository
 }
 
 /**
@@ -257,36 +253,35 @@ export async function getReposFromSearch(
 	query: string,
 	opts: SearchOptions = {}
 ): Promise<SearchRepository[]> {
+	// defaults
 	if (opts.page == null) opts.page = 1
 	if (opts.pages == null) opts.pages = 10
 	if (opts.size == null) opts.size = 100
-	try {
-		// fetch
-		const url = `${ghapi}/search/repositories?page=${opts.page}&per_page=${
-			opts.size
-		}&q=${encodeURIComponent(query)}&${githubAuthQueryString}`
-		const resp = await fetch(url, {
-			headers: {
-				Accept: 'application/vnd.github.v3+json',
-			},
-		})
-		const data = (await resp.json()) as SearchResponse
-		if (data && data.message) throw data.message
-		if (!data || !data.items || !Array.isArray(data.items))
-			throw new Error('response was not the format we expected')
-		if (data.items.length === 0) return []
-		const within = opts.pages === 0 || opts.page < opts.pages
-		if (data.items.length === opts.size && within)
-			return data.items.concat(
-				await getReposFromSearch(
-					query,
-					Object.assign({}, opts, { page: opts.page + 1 })
-				)
+
+	// fetch
+	const url = `${ghapi}/search/repositories?page=${opts.page}&per_page=${
+		opts.size
+	}&q=${encodeURIComponent(query)}`
+	const resp = await fetch(url, {
+		headers: {
+			Authorization: githubAuthorizationHeader(),
+			Accept: 'application/vnd.github.v3+json',
+		},
+	})
+	const data = (await resp.json()) as SearchResponse
+	if (data && data.message) throw data.message
+	if (!data || !data.items || !Array.isArray(data.items))
+		throw new Error('response was not the format we expected')
+	if (data.items.length === 0) return []
+	const within = opts.pages === 0 || opts.page < opts.pages
+	if (data.items.length === opts.size && within)
+		return data.items.concat(
+			await getReposFromSearch(
+				query,
+				Object.assign({}, opts, { page: opts.page + 1 })
 			)
-		return data.items
-	} catch (err) {
-		return Promise.reject(redact(err.message))
-	}
+		)
+	return data.items
 }
 
 /**

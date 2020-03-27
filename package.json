@@ -1,7 +1,7 @@
 {
   "title": "Get Repositories",
   "name": "getrepos",
-  "version": "4.0.3",
+  "version": "5.0.0",
   "description": "Fetch the specified repositories, or those that match a particular github user or search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": "MIT",
@@ -125,7 +125,7 @@
     "url": "https://github.com/bevry/getrepos.git"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "editions": [
     {
@@ -161,7 +161,7 @@
         "require"
       ],
       "engines": {
-        "node": "8 || 10 || 12 || 13",
+        "node": "10 || 12",
         "browsers": false
       }
     }
@@ -173,7 +173,7 @@
   "module": "edition-browsers/index.js",
   "dependencies": {
     "cross-fetch": "^3.0.4",
-    "githubauthquerystring": "^4.0.0",
+    "githubauthreq": "^5.0.0",
     "simplytyped": "^3.2.3"
   },
   "devDependencies": {

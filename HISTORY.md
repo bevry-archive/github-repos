@@ -1,5 +1,11 @@
 # History
 
+## v5.0.0 2020 March 27
+
+-   Updated for [GitHub's new authorization recommendations](https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param)
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+-   Minimum required node version changed from `node: >=0.8` to `node: >=8` to keep up with mandatory ecosystem changes
+
 ## v4.0.3 2020 March 27
 
 -   Fixed for latest TypeScript

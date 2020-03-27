@@ -73,7 +73,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.pika.dev/getrepos/^4.0.3'
+    import * as pkg from '//cdn.pika.dev/getrepos/^5.0.0'
 </script>
 ```
 
@@ -81,7 +81,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/getrepos@^4.0.3'
+    import * as pkg from '//unpkg.com/getrepos@^5.0.0'
 </script>
 ```
 
@@ -89,7 +89,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/getrepos@4.0.3'
+    import * as pkg from '//dev.jspm.io/getrepos@5.0.0'
 </script>
 ```
 
