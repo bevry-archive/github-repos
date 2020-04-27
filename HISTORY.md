@@ -1,5 +1,9 @@
 # History
 
+## v5.0.1 2020 April 27
+
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v5.0.0 2020 March 27
 
 -   Updated for [GitHub's new authorization recommendations](https://developer.github.com/changes/2020-02-10-deprecating-auth-through-query-param)

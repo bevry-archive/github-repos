@@ -3,7 +3,7 @@
 // Import
 import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
-import { githubAuthorizationHeader } from 'githubauthreq'
+import { getHeaders } from 'githubauthreq'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
 
 // =================================
@@ -221,10 +221,7 @@ export interface SearchOptions {
 export async function getRepo(repoFullName: string): Promise<Repository> {
 	const url = `${ghapi}/repos/${repoFullName}`
 	const resp = await fetch(url, {
-		headers: {
-			Authorization: githubAuthorizationHeader(),
-			Accept: 'application/vnd.github.v3+json',
-		},
+		headers: getHeaders(),
 	})
 	const data = (await resp.json()) as RepositoryResponse
 	if (data && data.message) throw data.message
@@ -263,10 +260,7 @@ export async function getReposFromSearch(
 		opts.size
 	}&q=${encodeURIComponent(query)}`
 	const resp = await fetch(url, {
-		headers: {
-			Authorization: githubAuthorizationHeader(),
-			Accept: 'application/vnd.github.v3+json',
-		},
+		headers: getHeaders(),
 	})
 	const data = (await resp.json()) as SearchResponse
 	if (data && data.message) throw data.message
