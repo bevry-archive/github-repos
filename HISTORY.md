@@ -1,5 +1,11 @@
 # History
 
+## v5.2.0 2020 May 11
+
+-   If status code `429` is returned, will try again in a minute
+-   Added optional `concurrency` argument to `getRepos`
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v5.1.0 2020 May 6
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)

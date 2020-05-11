@@ -4,7 +4,14 @@
 import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
 import { getHeaders } from 'githubauthreq'
+import Pool from 'native-promise-pool'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
+
+function halt(time: number) {
+	return new Promise(function (resolve, reject) {
+		setTimeout(resolve, time)
+	})
+}
 
 // =================================
 // Types
@@ -223,6 +230,14 @@ export async function getRepo(repoFullName: string): Promise<Repository> {
 	const resp = await fetch(url, {
 		headers: getHeaders(),
 	})
+	if (resp.status === 429) {
+		// wait a minute
+		console.warn(
+			`${url} returned 429, too many requests, trying again in a minute`
+		)
+		await halt(60)
+		return getRepo(repoFullName)
+	}
 	const data = (await resp.json()) as RepositoryResponse
 	if (data && data.message) throw data.message
 	if (!data || !data.full_name) throw new Error('response was not a repository')
@@ -233,9 +248,13 @@ export async function getRepo(repoFullName: string): Promise<Repository> {
  * Fetch data for Repositories from Repository Names
  * @param repoFullNames Array of repository names, such as `['bevry/getcontributors', 'bevry/getrepos']`
  */
-export async function getRepos(repoFullNames: string[]): Promise<Repository[]> {
+export async function getRepos(
+	repoFullNames: string[],
+	concurrency: number = 0
+): Promise<Repository[]> {
+	const pool = new Pool(concurrency)
 	return await Promise.all(
-		repoFullNames.map((repoFullName) => getRepo(repoFullName))
+		repoFullNames.map((repoFullName) => pool.open(() => getRepo(repoFullName)))
 	)
 }
 
