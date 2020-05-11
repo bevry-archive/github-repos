@@ -1,5 +1,9 @@
 # History
 
+## v5.2.1 2020 May 11
+
+-   Fixed 429 delay, had 60 milliseconds instead of 60 seconds
+
 ## v5.2.0 2020 May 11
 
 -   If status code `429` is returned, will try again in a minute

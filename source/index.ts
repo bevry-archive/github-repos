@@ -7,9 +7,14 @@ import { getHeaders } from 'githubauthreq'
 import Pool from 'native-promise-pool'
 const ghapi = process.env.GITHUB_API || 'https://api.github.com'
 
-function halt(time: number) {
+export function halt(milliseconds: number) {
+	if (milliseconds < 1000) {
+		console.warn(
+			'halt accepts milliseconds, you may have attempted to send it seconds, as you sent a value below 1000 milliseconds'
+		)
+	}
 	return new Promise(function (resolve, reject) {
-		setTimeout(resolve, time)
+		setTimeout(resolve, milliseconds)
 	})
 }
 
@@ -235,7 +240,7 @@ export async function getRepo(repoFullName: string): Promise<Repository> {
 		console.warn(
 			`${url} returned 429, too many requests, trying again in a minute`
 		)
-		await halt(60)
+		await halt(60 * 1000)
 		return getRepo(repoFullName)
 	}
 	const data = (await resp.json()) as RepositoryResponse
