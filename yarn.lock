@@ -1514,17 +1514,10 @@ mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-native-promise-pool@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/native-promise-pool/-/native-promise-pool-3.6.0.tgz#b3d3c730a9167851c2b69175dd83012310fb4191"
-  integrity sha512-TaJibaT3r77Cx9qC6Wpq/QZc10COdAhijWGDxR5c7OzToLwrgM4qxje5YC6ur9nv088Xkut7qm7YHuNHlt4Ljg==
-
-native-promise-pool@^3.5.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/native-promise-pool/-/native-promise-pool-3.9.0.tgz#554fb4c89dabc5fedbc89028462eae40fee1e401"
-  integrity sha512-rZgUbl4GiczdTcczVaw8d/kwzhELAjB7Qqy9gXC3l1OvgJKEDvj4vP/kJPAt3x10m5TdSdTPvdPz8YF35C0W+g==
-  dependencies:
-    editions "3.5.0"
+native-promise-pool@3.10.0, native-promise-pool@^3.5.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/native-promise-pool/-/native-promise-pool-3.10.0.tgz#f4717e064eb6d8e93dc3e4f6a862df3907466b54"
+  integrity sha512-+P5jCBH4QQqhoxSp7EhN+HE+wESMLzN+JmK+/AvsRybdVY8sBZWe5gjLZxU89htiF2tvAXZZR55h8aZ79nhFww==
 
 natural-compare@^1.4.0:
   version "1.4.0"

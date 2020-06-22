@@ -178,7 +178,7 @@
   "dependencies": {
     "cross-fetch": "^3.0.4",
     "githubauthreq": "5.7.0",
-    "native-promise-pool": "3.6.0",
+    "native-promise-pool": "3.10.0",
     "simplytyped": "^3.3.0"
   },
   "devDependencies": {
