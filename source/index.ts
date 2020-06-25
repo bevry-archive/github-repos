@@ -5,7 +5,8 @@ import { StrictUnion } from 'simplytyped'
 import fetch from 'cross-fetch'
 import { getHeaders } from 'githubauthreq'
 import Pool from 'native-promise-pool'
-const ghapi = process.env.GITHUB_API || 'https://api.github.com'
+import { env } from 'process'
+const { GITHUB_API = 'https://api.github.com' } = env
 
 export function halt(milliseconds: number) {
 	if (milliseconds < 1000) {
@@ -231,7 +232,7 @@ export interface SearchOptions {
  * @param repoFullName Repostory name, such as `'bevry/getrepos'`
  */
 export async function getRepo(repoFullName: string): Promise<Repository> {
-	const url = `${ghapi}/repos/${repoFullName}`
+	const url = `${GITHUB_API}/repos/${repoFullName}`
 	const resp = await fetch(url, {
 		headers: getHeaders(),
 	})
@@ -280,7 +281,7 @@ export async function getReposFromSearch(
 	if (opts.size == null) opts.size = 100
 
 	// fetch
-	const url = `${ghapi}/search/repositories?page=${opts.page}&per_page=${
+	const url = `${GITHUB_API}/search/repositories?page=${opts.page}&per_page=${
 		opts.size
 	}&q=${encodeURIComponent(query)}`
 	const resp = await fetch(url, {
