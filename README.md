@@ -69,11 +69,11 @@ getReposFromUsers(['bevry'], { pages: 0 })
 <li>Require: <code>const pkg = require('getrepos')</code></li>
 </ul>
 
-<a href="https://www.pika.dev/cdn" title="100% Native ES Modules CDN"><h3>pika</h3></a>
+<a href="https://www.skypack.dev" title="Skypack is a JavaScript Delivery Network for modern web apps"><h3>Skypack</h3></a>
 
 ``` html
 <script type="module">
-    import * as pkg from '//cdn.pika.dev/getrepos/^5.14.0'
+    import * as pkg from '//cdn.skypack.dev/getrepos@^5.15.0'
 </script>
 ```
 
@@ -81,7 +81,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 ``` html
 <script type="module">
-    import * as pkg from '//unpkg.com/getrepos@^5.14.0'
+    import * as pkg from '//unpkg.com/getrepos@^5.15.0'
 </script>
 ```
 
@@ -89,7 +89,7 @@ getReposFromUsers(['bevry'], { pages: 0 })
 
 ``` html
 <script type="module">
-    import * as pkg from '//dev.jspm.io/getrepos@5.14.0'
+    import * as pkg from '//dev.jspm.io/getrepos@5.15.0'
 </script>
 ```
 
