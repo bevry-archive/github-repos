@@ -1,23 +1,9 @@
 /* eslint camelcase:0 */
 
-// Import
+// external
 import { StrictUnion } from 'simplytyped'
-import fetch from 'cross-fetch'
-import { getHeaders } from 'githubauthreq'
 import Pool from 'native-promise-pool'
-import { env } from 'process'
-const { GITHUB_API = 'https://api.github.com' } = env
-
-export function halt(milliseconds: number) {
-	if (milliseconds < 1000) {
-		console.warn(
-			'halt accepts milliseconds, you may have attempted to send it seconds, as you sent a value below 1000 milliseconds'
-		)
-	}
-	return new Promise(function (resolve, reject) {
-		setTimeout(resolve, milliseconds)
-	})
-}
+import { query, GitHubCredentials } from '@bevry/github-api'
 
 // =================================
 // Types
@@ -180,7 +166,7 @@ export interface License {
 }
 
 /**
- * The organisation of a respository
+ * The organization of a repository
  */
 export interface Organization {
 	login: string
@@ -228,39 +214,39 @@ export interface SearchOptions {
 // Fetch Repository
 
 /**
- * Fetch data for Repostiory from Repository Name
- * @param repoFullName Repostory name, such as `'bevry/getrepos'`
+ * Fetch data for a repository from a repository slug (org/name)
+ * @param slug repository slug, such as `'bevry/github-repos'`
+ * @param credentials custom github credentials, omit to use the environment variables
  */
-export async function getRepo(repoFullName: string): Promise<Repository> {
-	const url = `${GITHUB_API}/repos/${repoFullName}`
-	const resp = await fetch(url, {
-		headers: getHeaders(),
+export async function getRepo(
+	slug: string,
+	credentials?: GitHubCredentials
+): Promise<Repository> {
+	const resp = await query({
+		pathname: `repos/${slug}`,
+		userAgent: '@bevry/github-repos',
+		credentials,
 	})
-	if (resp.status === 429) {
-		// wait a minute
-		console.warn(
-			`${url} returned 429, too many requests, trying again in a minute`
-		)
-		await halt(60 * 1000)
-		return getRepo(repoFullName)
-	}
-	const data = (await resp.json()) as RepositoryResponse
+	const data: RepositoryResponse = await resp.json()
 	if (data && data.message) throw data.message
 	if (!data || !data.full_name) throw new Error('response was not a repository')
 	return data as Repository
 }
 
 /**
- * Fetch data for Repositories from Repository Names
- * @param repoFullNames Array of repository names, such as `['bevry/getcontributors', 'bevry/getrepos']`
+ * Fetch data for repositories from their repository slugs
+ * @param slugs array of repository slugs, such as `['bevry/github-commit', 'bevry/github-repos']`
+ * @param concurrency custom concurrency to use, defaults to `0` which is infinite
+ * @param credentials custom github credentials, omit to use the environment variables
  */
 export async function getRepos(
-	repoFullNames: string[],
-	concurrency: number = 0
+	slugs: string[],
+	concurrency: number = 0,
+	credentials?: GitHubCredentials
 ): Promise<Repository[]> {
 	const pool = new Pool(concurrency)
 	return await Promise.all(
-		repoFullNames.map((repoFullName) => pool.open(() => getRepo(repoFullName)))
+		slugs.map((slug) => pool.open(() => getRepo(slug, credentials)))
 	)
 }
 
@@ -268,12 +254,15 @@ export async function getRepos(
 // Fetch from Search
 
 /**
- * Fetch data for Repostiories from a Search, will iterate all subsequent pages
- * @param query The search query to send to GitHub, such as `@bevry/getcontributors @bevry/getrepos`
+ * Fetch data for repositories from a search, will iterate all subsequent pages
+ * @param search the search query to send to GitHub, such as `@bevry language:typescript`
+ * @param opts custom search options
+ * @param credentials custom github credentials, omit to use the environment variables
  */
 export async function getReposFromSearch(
-	query: string,
-	opts: SearchOptions = {}
+	search: string,
+	opts: SearchOptions = {},
+	credentials?: GitHubCredentials
 ): Promise<SearchRepository[]> {
 	// defaults
 	if (opts.page == null) opts.page = 1
@@ -281,13 +270,19 @@ export async function getReposFromSearch(
 	if (opts.size == null) opts.size = 100
 
 	// fetch
-	const url = `${GITHUB_API}/search/repositories?page=${opts.page}&per_page=${
-		opts.size
-	}&q=${encodeURIComponent(query)}`
-	const resp = await fetch(url, {
-		headers: getHeaders(),
+	const resp = await query({
+		pathname: `search/repositories`,
+		searchParams: {
+			page: String(opts.page),
+			per_page: String(opts.size),
+			q: search,
+		},
+		userAgent: '@bevry/github-repos',
+		credentials,
 	})
-	const data = (await resp.json()) as SearchResponse
+	const data: SearchResponse = await resp.json()
+
+	// process
 	if (data && data.message) throw data.message
 	if (!data || !data.items || !Array.isArray(data.items))
 		throw new Error('response was not the format we expected')
@@ -296,21 +291,25 @@ export async function getReposFromSearch(
 	if (data.items.length === opts.size && within)
 		return data.items.concat(
 			await getReposFromSearch(
-				query,
-				Object.assign({}, opts, { page: opts.page + 1 })
+				search,
+				Object.assign({}, opts, { page: opts.page + 1 }),
+				credentials
 			)
 		)
 	return data.items
 }
 
 /**
- * Fetch data for Repostiories from Users
- * @param users Fetch repositories for these users, such as `['bevry', 'browserstate']`
+ * Fetch data for repositories from user/org names
+ * @param users fetch repositories for these users, such as `['bevry', 'browserstate']`
+ * @param opts custom search option
+ * @param credentials custom github credentials, omit to use the environment variables
  */
 export async function getReposFromUsers(
 	users: string[],
-	opts: SearchOptions = {}
+	opts: SearchOptions = {},
+	credentials?: GitHubCredentials
 ): Promise<SearchRepository[]> {
 	const query = users.map((name) => `@${name}`).join('%20')
-	return await getReposFromSearch(query, opts)
+	return await getReposFromSearch(query, opts, credentials)
 }

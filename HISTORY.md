@@ -1,5 +1,11 @@
 # History
 
+## v6.0.0 2021 August 5
+
+-   Renamed to `@bevry/github-repos`
+-   Updated for [`@bevry/github-api`](https://github.com/bevry/github-api)
+-   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
+
 ## v5.17.0 2020 October 29
 
 -   Updated dependencies, [base files](https://github.com/bevry/base), and [editions](https://editions.bevry.me) using [boundation](https://github.com/bevry/boundation)
