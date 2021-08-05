@@ -1,5 +1,9 @@
 # History
 
+## v6.1.0 2021 August 5
+
+-   Formalize `concurrency` within `MultiOpts`
+
 ## v6.0.0 2021 August 5
 
 -   Renamed to `@bevry/github-repos`

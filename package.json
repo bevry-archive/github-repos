@@ -1,7 +1,7 @@
 {
   "title": "GitHub Repositories",
   "name": "@bevry/github-repos",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Fetch the GitHub API response for a specified repository, or for all those that match a particular GitHub user/organization or a search query",
   "homepage": "https://github.com/bevry/getrepos",
   "license": "MIT",
@@ -205,6 +205,7 @@
   "module": "edition-browsers/index.js",
   "dependencies": {
     "@bevry/github-api": "^9.0.0",
+    "@bevry/list": "^1.7.0",
     "native-promise-pool": "^3.19.0",
     "simplytyped": "^3.3.0"
   },

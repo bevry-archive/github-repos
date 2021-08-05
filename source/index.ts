@@ -4,9 +4,25 @@
 import { StrictUnion } from 'simplytyped'
 import Pool from 'native-promise-pool'
 import { query, GitHubCredentials } from '@bevry/github-api'
+import { append } from '@bevry/list'
 
 // =================================
 // Types
+
+/** Options for queries that return multiple results. */
+export interface MultiOptions {
+	/** If you wish to skip the first page, then set this param, defaults to 1 */
+	page?: number
+
+	/** If you wish to change the amount of items returned per page, then set this param */
+	size?: number
+
+	/** If you wish to fetch unlimited pages, set this to zero, if you wish to fetch a specific amount of pages, then set this accordingly, defaults to `10` */
+	pages?: number
+
+	/** How many requests to make at once, defaults to `0` which is unlimited. */
+	concurrency?: number
+}
 
 /**
  * GitHub's error response
@@ -198,18 +214,6 @@ export interface Permissions {
 	pull: boolean
 }
 
-/**
- * Search Query Options
- */
-export interface SearchOptions {
-	/** If you wish to skip the first page, then set this param, defaults to 1 */
-	page?: number
-	/** If you wish to change the amount of items returned per page, then set this param */
-	size?: number
-	/** If you wish to fetch unlimited pages, set this to zero, if you wish to fetch a specific amount of pages, then set this accordingly, defaults to `10` */
-	pages?: number
-}
-
 // =================================
 // Fetch Repository
 
@@ -236,15 +240,15 @@ export async function getRepo(
 /**
  * Fetch data for repositories from their repository slugs
  * @param slugs array of repository slugs, such as `['bevry/github-commit', 'bevry/github-repos']`
- * @param concurrency custom concurrency to use, defaults to `0` which is infinite
+ * @param opts custom search options
  * @param credentials custom github credentials, omit to use the environment variables
  */
 export async function getRepos(
 	slugs: string[],
-	concurrency: number = 0,
+	opts: MultiOptions = {},
 	credentials?: GitHubCredentials
 ): Promise<Repository[]> {
-	const pool = new Pool(concurrency)
+	const pool = new Pool(opts.concurrency)
 	return await Promise.all(
 		slugs.map((slug) => pool.open(() => getRepo(slug, credentials)))
 	)
@@ -261,7 +265,7 @@ export async function getRepos(
  */
 export async function getReposFromSearch(
 	search: string,
-	opts: SearchOptions = {},
+	opts: MultiOptions = {},
 	credentials?: GitHubCredentials
 ): Promise<SearchRepository[]> {
 	// defaults
@@ -282,21 +286,33 @@ export async function getReposFromSearch(
 	})
 	const data: SearchResponse = await resp.json()
 
-	// process
+	// prepare
+	const results: Array<SearchRepository> = []
+
+	// check
 	if (data && data.message) throw data.message
 	if (!data || !data.items || !Array.isArray(data.items))
 		throw new Error('response was not the format we expected')
-	if (data.items.length === 0) return []
+	if (data.items.length === 0) return results
+
+	// add these items
+	append(results, data.items)
+
+	// add next items
 	const within = opts.pages === 0 || opts.page < opts.pages
-	if (data.items.length === opts.size && within)
-		return data.items.concat(
+	const anotherPage = data.items.length === opts.size && within
+	if (anotherPage)
+		append(
+			results,
 			await getReposFromSearch(
 				search,
-				Object.assign({}, opts, { page: opts.page + 1 }),
+				{ ...opts, page: opts.page + 1 },
 				credentials
 			)
 		)
-	return data.items
+
+	// return it all
+	return results
 }
 
 /**
@@ -307,7 +323,7 @@ export async function getReposFromSearch(
  */
 export async function getReposFromUsers(
 	users: string[],
-	opts: SearchOptions = {},
+	opts: MultiOptions = {},
 	credentials?: GitHubCredentials
 ): Promise<SearchRepository[]> {
 	const query = users.map((name) => `@${name}`).join('%20')
