@@ -12,7 +12,7 @@ kava.suite('@bevry/github-repos', function (suite, test) {
 				equal(
 					result.length > 0,
 					true,
-					`length to be more than 0, it was ${result.length}`
+					`length to be more than 0, it was ${result.length}`,
 				)
 				done()
 			})
@@ -26,7 +26,7 @@ kava.suite('@bevry/github-repos', function (suite, test) {
 				equal(
 					result.length > 0,
 					true,
-					`length to be more than 0, it was ${result.length}`
+					`length to be more than 0, it was ${result.length}`,
 				)
 				done()
 			})
@@ -40,7 +40,7 @@ kava.suite('@bevry/github-repos', function (suite, test) {
 				equal(
 					result.length > 0,
 					true,
-					`length to be more than 0, it was ${result.length}`
+					`length to be more than 0, it was ${result.length}`,
 				)
 				done()
 			})

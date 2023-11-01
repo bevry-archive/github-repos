@@ -224,7 +224,7 @@ export interface Permissions {
  */
 export async function getRepo(
 	slug: string,
-	credentials?: GitHubCredentials
+	credentials?: GitHubCredentials,
 ): Promise<Repository> {
 	const resp = await query({
 		pathname: `repos/${slug}`,
@@ -246,11 +246,11 @@ export async function getRepo(
 export async function getRepos(
 	slugs: string[],
 	opts: MultiOptions = {},
-	credentials?: GitHubCredentials
+	credentials?: GitHubCredentials,
 ): Promise<Repository[]> {
 	const pool = new Pool(opts.concurrency)
 	return await Promise.all(
-		slugs.map((slug) => pool.open(() => getRepo(slug, credentials)))
+		slugs.map((slug) => pool.open(() => getRepo(slug, credentials))),
 	)
 }
 
@@ -266,7 +266,7 @@ export async function getRepos(
 export async function getReposFromSearch(
 	search: string,
 	opts: MultiOptions = {},
-	credentials?: GitHubCredentials
+	credentials?: GitHubCredentials,
 ): Promise<SearchRepository[]> {
 	// defaults
 	if (opts.page == null) opts.page = 1
@@ -307,8 +307,8 @@ export async function getReposFromSearch(
 			await getReposFromSearch(
 				search,
 				{ ...opts, page: opts.page + 1 },
-				credentials
-			)
+				credentials,
+			),
 		)
 
 	// return it all
@@ -324,7 +324,7 @@ export async function getReposFromSearch(
 export async function getReposFromUsers(
 	users: string[],
 	opts: MultiOptions = {},
-	credentials?: GitHubCredentials
+	credentials?: GitHubCredentials,
 ): Promise<SearchRepository[]> {
 	const query = users.map((name) => `@${name}`).join('%20')
 	return await getReposFromSearch(query, opts, credentials)
