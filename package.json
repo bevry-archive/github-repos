@@ -204,7 +204,7 @@
   "browser": "edition-browsers/index.js",
   "module": "edition-browsers/index.js",
   "dependencies": {
-    "@bevry/github-api": "^10.0.0",
+    "@bevry/github-api": "^11.4.0",
     "@bevry/list": "^1.7.0",
     "native-promise-pool": "^3.19.0",
     "simplytyped": "^3.3.0"
